@@ -26,3 +26,10 @@
     conda env list
     
     使用环境： conda activate <环境名>
+5. anaconda python38环境下pip install显示  Could not fetch URL https://pypi.python.org/simple/: connection error: HTTPSConnectionPool(host='pyp
+
+   错误： ①Could not fetch URL https://pypi.python.org/simple/: connection error: HTTPSConnectionPool(host='pyp ② Could not find a version that satisfies the requirement scikit-learn==0.19.1 (from versions: ) 
+   
+   解决：使用国内镜像并trust
+   
+    e.g. pip install numpy -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com
