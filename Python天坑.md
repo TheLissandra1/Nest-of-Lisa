@@ -24,4 +24,5 @@
 4. 如何查看anaconda安装了什么环境
 
     conda env list
+    
     使用环境： conda activate <环境名>
