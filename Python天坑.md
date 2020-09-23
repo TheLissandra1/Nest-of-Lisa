@@ -1,4 +1,4 @@
-1. pip安装/更新一直不成功，用下面的命令试试，重点是--user
+##1. pip安装/更新一直不成功，用下面的命令试试，重点是--user
 
   pip install --user --upgrade pip
   
