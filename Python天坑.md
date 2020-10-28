@@ -33,3 +33,10 @@
    解决：使用国内镜像并trust
    
   - [Q1]  e.g. pip install numpy -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com
+  
+ ### 6. pycharm 提示" package requirement opencv-contrib-python is not satisfied "
+ 
+    解决： pip install --user -i https://pypi.tuna.tsinghua.edu.cn/simple opencv-contrib-python
+    重点是加 --user
+    
+    
