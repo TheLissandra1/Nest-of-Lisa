@@ -104,6 +104,16 @@
      optimizer.zero_grad()
      
      ```
+     #### Chain Rule
+     * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks/chainrule.png">
+     #### Why do we want to calculate those gradients?
+     ###### * Because typically our computational graph has more operations & at the very end we calculate a loss function that we want to minimize. So we have to calculate the gradient of this loss with respect to our parameter X in the beginning. And, in order to get dLoss/dX, we need to calculate inner local gradients and use the chain rule.
+     * Three steps:
+         1. Forward pass: Compute Loss
+         2. Compute local gradients
+         3. Backward pass: Compute dLoss/dWeights using the Chain Rule
+     * 
+     
      
               
               
