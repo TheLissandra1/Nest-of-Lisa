@@ -18,9 +18,9 @@
   ```python
   x = torch.rand(2,2)
   y = torch.rand(2,2)
-  z = x - y equals ` to `z = torch.sub(x,y)
+  z = x - y equals  to z = torch.sub(x,y)
   ```    
-  * Multiply ` torch.mul()`  Substitute: `torch.mul_()`
+  * Multiply ` torch.mul()`  Sustitute: `torch.mul_()`
   * Division ` torch.div()`
 * * * 
 #### Slice operation
@@ -37,8 +37,10 @@
   * * * 
 #### From Numpy to torch
 ###### Numpy run in CPU and Torch run in GPU, so we cannot transform a tensor working on GPU back to Numpy
-   ` a = np.ones(5)  
-     b = torch.from_numpy(a, dtype = float16) `
+  ```python
+    a = np.ones(5)  
+    b = torch.from_numpy(a, dtype = float16) 
+  ```
   * Use this to transport a numpy array into a tensor
   * ` a += 1` Increment in each value
   ```python
@@ -52,7 +54,7 @@
    ```
 * * * 
 ## Gradient Calculation with Autograd  
-  * ` x = torch.ones(5, requires_grad=True)
+  * ` x = torch.ones(5, requires_grad=True) `
   * ` torch.randn()` 生成随机standard normal distribution的 [0, 1]之间的数
   * 
     ```python
@@ -60,14 +62,51 @@
     
     y = x + 2
     z = y*y*2
-    z = z.mean()
     
     z = backward() # dz/dx 
     print(x.grad)
     # In background, it creates a so-called vector Jacobian product to get gradients
     ```
-    
     <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks/G%40JRP3U0X_E474H(%5D_E%24KXH.png">
+    * This left one is Jacobian matrix, the middle one is the gradient vector, and the right one is the final gradients that we are interested in. This is the so-called 'Chain rule'.
+    * `backward(v)` requires input as a vector if input has an argument. However, with no input `backward()` can accept a scalar
+    #### How to prevent from tracking the gradients
+      * Three options
+        1. ` call `x.requires_grad_(False)`
+        2. ` x.detach() ` # this will create a new vector/tensor with the same values, but it dpesn't require the gradient
+        3. ```python
+            with torch.no_grad():
+              y = x + 2
+              print(y)
+           ```
+     * Whenever we call the backward function, the gradient for this tensor will be accumulated into the dot grad attribute, so their values will be summed up.
+     ##### Example
+     ```python
+     weights = torch.ones(4, requires_grad=True)
+     
+     for epoch in range(2): # 2 iteration
+           model_output = (weights*3).sum()
+           model_output.backward()
+           print(weighs.grad)
+         # If we run the code now, gradients will be accumulated as the sum()
+          
+         # before we do the next iteration and optimization step, we must empty the gradients
+         # so we need to do this:
+         weights.grad.zero_()
+         # now if we run this, our gradients are correct
+     ```
+     ###### However, we can simply use PyTorch built-in optimizer to do this (a simple example)
+     ```python
+     weights = torch.ones(4, requires_grad=True)
+     
+     optimizer = torch.optim.SGD(weights, lr=0.01)
+     optimizer.step()
+     optimizer.zero_grad()
+     
+     ```
+     
+              
+              
      
        
      
