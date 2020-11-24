@@ -28,4 +28,21 @@
   * Use `.item() `to show the whole value
   * ` x.view() ` To reshape
   * If use `x.view(-1, 8)` ,by enter the first parameter = -1, PyTorch will help determine the write dimension with 8 columns.
+  * * * 
+#### From Numpy to torch
+###### Numpy run in CPU and Torch run in GPU, so we cannot transform a tensor working on GPU back to Numpy
+   ` a = np.ones(5)  
+     b = torch.from_numpy(a, dtype = float16) `
+  * Use this to transport a numpy array into a tensor
+  * ` a += 1` Increment in each value
+    ` if torch.cuda.is_available():
+          `device = torch.device("cuda") # cuda means GPU
+          `x = torch.ones(5, device=device) `# set x runs in GPU
+          `y = torch.ones(5)` # originally y runs in CPU
+          `y = t.to(device)` # set y to run in GPU
+          `z = x + y `#this will run in GPU and it will be faster
+          `z = z.to("cpu") `#this will run in CPU again 
   * 
+     
+       
+     
