@@ -14,6 +14,6 @@
   * All PyTorch functions with a '_' tail will do an in-place operation.
   ` x = torch.rand(2,2)
     y = torch.rand(2,2)
-    z = x*y
-    equals ` to `z = torch.sub(x,y)`
-  * 
+    z = x - y equals ` to `z = torch.sub(x,y)`    
+  * Multiply ` torch.mul()`  Substitute: `torch.mul_()`
+  * Division ` torch.div()`
