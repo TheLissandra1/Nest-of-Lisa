@@ -1,7 +1,8 @@
 # Learning PyTorch Basic 
 ## Tensor Basics:
 ### In Numpy arrays and vectors
-### BUT in PyTorch, everything is a Tensor, so a tensor can have different dimensions, e.g. 1d, 2d, or even 3d or more.  
+### BUT in PyTorch, everything is a Tensor, so a tensor can have different dimensions, e.g. 1d, 2d, or even 3d or more.
+#### Calculation
   ` import torch
       x = torch.empty(3)
       print(x)`
@@ -17,3 +18,14 @@
     z = x - y equals ` to `z = torch.sub(x,y)`    
   * Multiply ` torch.mul()`  Substitute: `torch.mul_()`
   * Division ` torch.div()`
+* * * 
+#### Slice operation
+  ` x = torch.rand(5,3)
+    print(x)
+    print(x[;, 0]) `
+  * We can see the first column in all rows with :,0
+  * We can see certain element e.g.` x[1,1]`
+  * Use `.item() `to show the whole value
+  * ` x.view() ` To reshape
+  * If use `x.view(-1, 8)` ,by enter the first parameter = -1, PyTorch will help determine the write dimension with 8 columns.
+  * 
