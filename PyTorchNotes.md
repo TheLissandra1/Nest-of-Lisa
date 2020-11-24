@@ -3,9 +3,11 @@
 ### In Numpy arrays and vectors
 ### BUT in PyTorch, everything is a Tensor, so a tensor can have different dimensions, e.g. 1d, 2d, or even 3d or more.
 #### Calculation
-  ` import torch
+  ```python
+  import torch
       x = torch.empty(3)
-      print(x)`
+      print(x)
+  ```
   * ` torch.empty(3)`创建了一个一维向量，包含三个elements
   * ` torch.empty(2,3)` 创建了一个2行3列的二维矩阵
   * ` torch.zeros(), torch.ones()`
@@ -13,16 +15,20 @@
   * ` x.size()` 查看dimension
   * ` torch.tensor([2.5, 0.1]) ` 创建list
   * All PyTorch functions with a '_' tail will do an in-place operation.
-  ` x = torch.rand(2,2)
-    y = torch.rand(2,2)
-    z = x - y equals ` to `z = torch.sub(x,y)`    
+  ```python
+  x = torch.rand(2,2)
+  y = torch.rand(2,2)
+  z = x - y equals ` to `z = torch.sub(x,y)
+  ```    
   * Multiply ` torch.mul()`  Substitute: `torch.mul_()`
   * Division ` torch.div()`
 * * * 
 #### Slice operation
-  ` x = torch.rand(5,3)
-    print(x)
-    print(x[;, 0]) `
+ ```python
+ x = torch.rand(5,3)
+ print(x)
+ print(x[;, 0])
+ ```
   * We can see the first column in all rows with :,0
   * We can see certain element e.g.` x[1,1]`
   * Use `.item() `to show the whole value
@@ -35,14 +41,19 @@
      b = torch.from_numpy(a, dtype = float16) `
   * Use this to transport a numpy array into a tensor
   * ` a += 1` Increment in each value
-    ` if torch.cuda.is_available():
-          `device = torch.device("cuda") # cuda means GPU
-          `x = torch.ones(5, device=device) `# set x runs in GPU
-          `y = torch.ones(5)` # originally y runs in CPU
-          `y = t.to(device)` # set y to run in GPU
-          `z = x + y `#this will run in GPU and it will be faster
-          `z = z.to("cpu") `#this will run in CPU again 
-  * 
+  ```python
+  if torch.cuda.is_available():
+       device = torch.device("cuda") # cuda means GPU
+       x = torch.ones(5, device=device) # set x runs in GPU
+       y = torch.ones(5) # originally y runs in CPU
+       y = t.to(device) # set y to run in GPU
+       z = x + y # this will run in GPU and it will be faster
+       z = z.to("cpu") # this will run in CPU again 
+   ```
+* * * 
+## Gradient Calculation with Autograd  
+  * ` x = torch.ones(5, requires_grad=True)`
+  
      
        
      
