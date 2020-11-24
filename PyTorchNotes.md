@@ -1,7 +1,7 @@
 # Learning PyTorch Basic 
 ## Tensor Basics:
-### In Numpy arrays and vectors
-### BUT in PyTorch, everything is a Tensor, so a tensor can have different dimensions, e.g. 1d, 2d, or even 3d or more.
+#### In Numpy arrays and vectors
+#### BUT in PyTorch, everything is a Tensor, so a tensor can have different dimensions, e.g. 1d, 2d, or even 3d or more.
 #### Calculation
   ```python
   import torch
@@ -52,8 +52,22 @@
    ```
 * * * 
 ## Gradient Calculation with Autograd  
-  * ` x = torch.ones(5, requires_grad=True)`
-  
+  * ` x = torch.ones(5, requires_grad=True)
+  * ` torch.randn()` 生成随机standard normal distribution的 [0, 1]之间的数
+  * 
+    ```python
+    x = torch.randn(3, requires_grad=True)
+    
+    y = x + 2
+    z = y*y*2
+    z = z.mean()
+    
+    z = backward() # dz/dx 
+    print(x.grad)
+    # In background, it creates a so-called vector Jacobian product to get gradients
+    ```
+    
+    <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks/G%40JRP3U0X_E474H(%5D_E%24KXH.png">
      
        
      
