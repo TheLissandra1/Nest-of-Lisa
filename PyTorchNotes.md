@@ -67,7 +67,7 @@
     print(x.grad)
     # In background, it creates a so-called vector Jacobian product to get gradients
     ```
-    <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks/G%40JRP3U0X_E474H(%5D_E%24KXH.png">
+    * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks/G%40JRP3U0X_E474H(%5D_E%24KXH.png">
     * This left one is Jacobian matrix, the middle one is the gradient vector, and the right one is the final gradients that we are interested in. This is the so-called 'Chain rule'.
     * `backward(v)` requires input as a vector if input has an argument. However, with no input `backward()` can accept a scalar
     #### How to prevent from tracking the gradients
