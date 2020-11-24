@@ -107,12 +107,37 @@
      #### Chain Rule
      * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks/chainrule.png">
      #### Why do we want to calculate those gradients?
-     ###### * Because typically our computational graph has more operations & at the very end we calculate a loss function that we want to minimize. So we have to calculate the gradient of this loss with respect to our parameter X in the beginning. And, in order to get dLoss/dX, we need to calculate inner local gradients and use the chain rule.
+     ##### * Because typically our computational graph has more operations & at the very end we calculate a loss function that we want to minimize. So we have to calculate the gradient of this loss with respect to our parameter X in the beginning. And, in order to get dLoss/dX, we need to calculate inner local gradients and use the chain rule.
      * Three steps:
          1. Forward pass: Compute Loss
          2. Compute local gradients
          3. Backward pass: Compute dLoss/dWeights using the Chain Rule
+     #### A Linear Regression Example
      * 
+     ```python
+     import torch
+     
+     x = torch.tensor(1.0)
+     y = torch.tensor(2.0)
+     
+     w = torch.tensor(1.0,requires_grad=True)
+     
+     # forward pass and compute the loss
+     y_hat = w*x
+     loss = (y_hat - y)**2
+     print(loss)
+     
+     # backward pass
+     loss.backward()
+     print(w.grad)
+     
+     ### update weights
+     ### next forward and backward pass and do iterations 
+     ```
+ * * * 
+## Gradient Descent with Autograd and Backpropagation
+####
+     
      
      
               
