@@ -177,7 +177,7 @@ for epoch in range(n_iters):
     # update weights
     w -= learning_rate *dw
     
-    if epoch %1 ==0: # in every step
+    if epoch %1 ==0: # %1 means ONE step size
         print(f'epoch{epoch+1}: w = {w:.3f}, loss = {l:.8f} ')
  print(f'Prediction after training: f(5) = {forward(5):.3f}')
 
