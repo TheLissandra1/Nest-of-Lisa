@@ -56,11 +56,42 @@ class WineDataset(Dataset):
     def __len__(self):
         # len(dataset)
         return self.n_samples
+        
 dataset = WineDataset()
 first_data = dataset[0]
 features, labels = first_data
 print(features, labels)
 
+# See how to use dataloader
+dataloader = DataLoader(dataset, batch_size=4, shuffle=True, num_workers=2) # shuffle means random
+
+datatiter = iter(dataloader)
+data = datatiter.next()
+features, labels = data
+print(features, labels)
+
+################
+# training loop
+num_epochs = 2
+total_samples = len(dataset)
+n_iterations = math.ceil(total_samples/4)  # ceil 向大取整, 4 is the batch_size
+print(total_samples, n_iterations) # 178 45
 
 
+for epoch in range(num_epochs):
+    for i, (inputs, labels) in enumerate(dataloader): # enumerate(), 枚举，返回一个索引序列
+        # forward and backward pass, update weights
+        if (i+1) % 5 ==0: # every 5 step
+            print(f'epoch{epoch+1}/{num_epochs},step{i+1}/{n_iterations},inputs{inputs.shape}')
+           
 ```
+* * *
+## Dataset Transforms
+#### transforms 
+* [documentation: ] (https://pytorch.org/docs/stable/torchvision/transforms.html)
+*
+| On Images | On Tensors | Conversion | Generic | Custom | Compose multiple Transforms |
+| :-------: | :--------: | :-----: | :-------: | :-------: | :-------: |
+| CenterCrop, Grayscale, Pad, RandomAffine, RandomCrop, RandomHorizontalFlip, RandomRotation, Resize, Scale | LinearTransformation, Normalize, RandomErasing | ToPILImage: from tensor or ndarray; To Tensor: from numpy.ndarray or PILImage | Use Lambda | Write own class | composed = transforms.Compose([Rescale(256), RandomCrop(224)])   torch.vision.transforms.ReScale(256)   torchvision.transforms.ToTensor() |
+
+
