@@ -91,7 +91,7 @@ for epoch in range(num_epochs):
 * [documentation: ] (https://pytorch.org/docs/stable/torchvision/transforms.html)
 *
 | On Images | On Tensors | Conversion | Generic | Custom | Compose multiple Transforms |
-| :-------: | :--------: | :-----: | :-------: | :-------: | :-------: |
+| :-------| :-------- | :----- | :------- | :------- | :------- |
 | CenterCrop, Grayscale, Pad, RandomAffine, RandomCrop, RandomHorizontalFlip, RandomRotation, Resize, Scale | LinearTransformation, Normalize, RandomErasing | ToPILImage: from tensor or ndarray; To Tensor: from numpy.ndarray or PILImage | Use Lambda | Write own class | composed = transforms.Compose([Rescale(256), RandomCrop(224)])   torch.vision.transforms.ReScale(256)   torchvision.transforms.ToTensor() |
 
 
