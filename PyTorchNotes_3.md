@@ -27,6 +27,9 @@ for epoch in range(1000):
 3. And do the optimization based only on those batches
 4. PyTorch can do batch calculations and iterations for us, so it's easy to use.
 ### Some Terms about batch training
+|Term | Explanation |
+| :-----| :----------|
 | epoch | 1 forward and backward pass of all training samples |
-| :-----| :----------------------------------------------------|
 | batch_size | number of training samples in one forward and backward pass |
+| number of iterations | number of passes, each pass using [batch_size] number of samples |
+##### E.g. 100 samples, batch_size = 20--> 100/20 = 5 iterations for 1 epoch
