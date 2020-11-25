@@ -172,7 +172,8 @@ for epoch in range(n_iters):
     model = LogisticRegression(n_features)
             
     # 2. loss and optimizer
-    learning_rate =     criterion = nn.BCELoss() # binary cross-entropy loss
+    learning_rate = 0.01
+    criterion = nn.BCELoss() # binary cross-entropy loss
     optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
     # 3. training loop
     num_epochs = 100
