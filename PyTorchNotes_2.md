@@ -125,7 +125,7 @@ for epoch in range(n_iters):
   
   * * *
   ## Logistic Regression
-    * 
+  *
     ```python
     import torch
     import torch.nn as nn
