@@ -1,3 +1,3 @@
-# Dataset and DataLoader-Batch Training
+# Learn PyTorch Basic_Part 3
 * * * 
-## 
+##  Dataset and DataLoader-Batch Training
