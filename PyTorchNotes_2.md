@@ -122,3 +122,81 @@ for epoch in range(n_iters):
   plt.plot(X_numpy, predicted, 'b')
   plt.show()
   ```
+  
+  * * *
+  ## Logistic Regression
+    * 
+    ```python
+    import torch
+    import torch.nn as nn
+    import numpy as np
+    from sklearn import datasets
+    from sklearn.preprocessing import StandardScaler # to scale our features
+    from sklearn.model_selection import train_test_split
+    
+    # 0. prepare data
+    bc = datasets.load_breast_cancer()
+    X, y = bc.data, bc.target
+    
+    n_samples, n_features = X.shape
+    print(n_samples, n_features) # 569, 30
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1234)
+    
+    # scale our features
+    sc = StandardScaler() # recommended to do in logistic regression, which will make features have zero mean and unit variance 
+    X_train = sc.fit_transform(X_train) 
+    X_test = sc.transform(X_test) # Perform standardization by centering and scaling
+    
+    X_train = torch.from_numpy(X_train.astype(np.float32)
+    X_test = torch.from_numpy(X_test.astype(np.float32)
+    y_train = torch.from_numpy(y_train.astype(np.float32)
+    y_test = torch.from_numpy(y_test.astype(np.float32)
+    
+    y_train = y_train.view(y_train.shape[0], 1)
+    y_test = y_test.view(y_test.shape[0], 1)
+    
+    
+    
+    
+    
+    # 1. model
+    # f = wx + b, sigmoid at the end
+    class LogisticRegression(nn.Module):
+        def __init__(self, n_input_features):
+            super(LogisticRegression, self).__init__()
+            self.linear = nn.Linear(n_input_features, 1)
+        def forward(self,x):
+            y_predicted = torch.sigmoid(self.linear(x))
+            return y_predicted
+    model = LogisticRegression(n_features)
+            
+    # 2. loss and optimizer
+    learning_rate =     criterion = nn.BCELoss() # binary cross-entropy loss
+    optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+    # 3. training loop
+    num_epochs = 100
+    for epoch in range(num_epochs):
+        # forward pass and loss
+        y_predicted = model(X_train)
+        loss = criterion(y_predicted, y_train)
+        # backward pass
+        loss.backward()
+        # updates
+        optimizer.step()
+        # zero gradients
+        optimizer.zero_grad()
+        if (epoch+1) % 10 == 0:
+            print(f'epoch:{epoch+1}, loss = {loss.item():.4f}')
+     
+     with torch.no_grad(): # In PyTorch, it is a context manager, 被with torch.no_grad() wrap起来的语句，将不会track gradients
+     # evaluation 
+        y_predicted = model(X_test)
+        y_predicted_cls = y_predicted.round()
+        acc = y_predicted_cls.eq(y_test).sum()/float(y_test.shape[0]) # shape[0] returns the number of elements in y_test
+        # 大写命名X表示二位矩阵，小写y表示一维向量
+        print(f'accuracy = {acc:.4f}')
+        
+        print()
+    
+    ```
