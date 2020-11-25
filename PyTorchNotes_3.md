@@ -94,4 +94,49 @@ for epoch in range(num_epochs):
 | :-------| :-------- | :----- | :------- | :------- | :------- |
 | CenterCrop, Grayscale, Pad, RandomAffine, RandomCrop, RandomHorizontalFlip, RandomRotation, Resize, Scale | LinearTransformation, Normalize, RandomErasing | ToPILImage: from tensor or ndarray; To Tensor: from numpy.ndarray or PILImage | Use Lambda | Write own class | composed = transforms.Compose([Rescale(256), RandomCrop(224)])   torch.vision.transforms.ReScale(256)   torchvision.transforms.ToTensor() |
 
+### Sample based on previous WineDataset class
+*
+```python
+import torch
+import torchvision
+from torch.utils.data import Dataset, DataLoader
+import numpy as np
+import math
 
+class WineDataset(Dataset):
+    def __init__(self, transform=None):
+        # data loading 
+        xy = np.loadtxt('./data/wine/wine.csv', detimiter=",", dtype=np.float32, skiprows=1)
+        self.n_samples = xy.shape[0] # the 1st dimension is the number of samples
+        
+        # note that we do not convert to tensor here
+        self.x = xy[:,1:] # all samples without 1st column
+        self.yy = xy[:, [0]] # all n_samples but only 1st column
+        
+        self.transform = transform
+        
+    def __getitem__(self,index):
+        # dataset[0]
+        sample = self.x[index], self.y[index] # this will return a tuple
+        
+        if self.transform:
+            sample = self.transform(sample)
+        return sample
+        
+    def __len__(self):
+        # len(dataset)
+        return self.n_samples
+
+class ToTensor:
+    def __call__(self, sample):
+        inputs, targets = sample
+        return torch.from_numpy(inputs), torch.from_numpy(targets)
+
+dataset = WineDataset(transform=ToTensor())
+first_data = dataset[0]
+features, labels = first_data
+print(type(features), type(labels))
+
+
+
+```
