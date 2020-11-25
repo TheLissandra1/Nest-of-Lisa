@@ -24,7 +24,16 @@ print(n_samples, n_features)
 input_size = n_features
 output_size = n_features
 
-model = nn.Linear(input_size, output_size)
+model = nn.Linear(input_size, output_size) # This is simple and only 1 layer
+
+# Try a custom model
+class LinearRegression(nn.Module):
+    def __init__(self, input_dim, output_dim):
+        super(LinearRegression, self).__init__()
+        # define layers
+        self.lin = nn.Linear(input_dim, output_dim)
+    def forward(self, x):
+        retrun self.lin(x)
 
 print(f'Prediction before training: f(5) = {model(X_test).item():.3f}') # call item() because we want to see the value rather than tensor
     
