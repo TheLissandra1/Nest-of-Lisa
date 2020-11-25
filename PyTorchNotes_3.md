@@ -28,4 +28,5 @@ for epoch in range(1000):
 4. PyTorch can do batch calculations and iterations for us, so it's easy to use.
 ### Some Terms about batch training
 | epoch | 1 forward and backward pass of all training samples |
-| batch_size| number of training samples in one forward and backward pass |
+| :-----| :----------------------------------------------------|
+| batch_size | number of training samples in one forward and backward pass |
