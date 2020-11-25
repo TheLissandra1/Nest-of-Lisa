@@ -117,7 +117,7 @@ for epoch in range(n_iters):
         print(f'epoch: {epoch+1}, loss = {loss.item():.4f}')
   
   # plot 
-  predictd = model(X).detach().numpy()
+  predictd = model(X).detach().numpy() # convert it from a new tensor to numpy # use detach() to avoid tracking gradients in computational graph
   plt.plot(X_numpy, y_numpy, 'ro')
   plt.plot(X_numpy, predicted, 'b')
   plt.show()
