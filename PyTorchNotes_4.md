@@ -29,7 +29,7 @@ print(outputs)
 * And the loss increases as the predicted probability diverges from the actual label, so the better our prediction the lower is our loss so here we have 2 examples.
 * So here we have a good prediction and a low cross-entropy loss and below is a bad prediction and a high cross-entropy loss.
 * The raw values classes are ONE-HOT codding
-* <img src="https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks/0%24M%600RHA)%5BM%5DW%7BRGEE%5BWKVP.png",width = "60%">
+* <img src="https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks/0%24M%600RHA)%5BM%5DW%7BRGEE%5BWKVP.png" width="60%">
 #### Code Example
 *
 ```python
@@ -38,7 +38,7 @@ import torch.nn as nn
 import numpy as np
 
 def cross_entropy(actual, predicted):
-    loss = -np.sum(actual * np.log(predicted))
+    loss = -np.sum(actual * np.log(predicted)) # implementation as cross-entropy formula in graph above
     return loss
 # y must be one hot encoded
 # if class 0: [1 0 0] # 0, 1, 2 rows occupied by 1 and others are 0
