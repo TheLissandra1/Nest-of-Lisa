@@ -24,4 +24,34 @@ output = torch.softmax(x, dim=0) # dim=0 compute along the 1st axis
 print(outputs)
 
 ```
+#### Cross-Entropy: Softmax is often combined with cross-entropy loss
+* Cross-Entropy: It measures the performance of classification model whose output is a probability between 0 & 1, and it can be used in multi class problems
+* And the loss increases as the predicted probability diverges from the actual label, so the better our prediction the lower is our loss so here we have 2 examples.
+* So here we have a good prediction and a low cross-entropy loss and below is a bad prediction and a high cross-entropy loss.
+* The raw values classes are ONE-HOT codding
+* <img src="https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks/0%24M%600RHA)%5BM%5DW%7BRGEE%5BWKVP.png",width = "60%">
+#### Code Example
+*
+```python
+import torch
+import torch.nn as nn
+import numpy as np
 
+def cross_entropy(actual, predicted):
+    loss = -np.sum(actual * np.log(predicted))
+    return loss
+# y must be one hot encoded
+# if class 0: [1 0 0] # 0, 1, 2 rows occupied by 1 and others are 0
+# if class 1: [0 1 0]
+# if class 2: [0 0 1]
+Y = np.array([1, 0, 0])
+
+# y_pred has probabilities
+Y_pred_good = np.array([0.7,0.2,0.1])
+Y_pred_bad = np.array([0.1,0.3,0.6])
+l1 = cross_entropy(Y, Y_pred_good)
+l2 = cross_entropy(Y, Y_pred_bad)
+print(f'Loss1 numpy: {l1:.4f}')
+print(f'Loss2 numpy: {l2:.4f}')
+
+```
