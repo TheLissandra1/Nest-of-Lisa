@@ -80,4 +80,7 @@ _, predictions2 = torch.max(Y_pred_bad, 1)
 print(predictions1)
 print(predictions2)
 ```
-**
+* * *
+* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks/afda4798204f78b2fdcfe1fb09da4db.png" width="70&">
+* Convert to a binary problem
+* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks/afda4798204f78b2fdcfe1fb09da4db.png" width="50&">
