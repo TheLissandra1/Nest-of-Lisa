@@ -30,11 +30,9 @@ print(outputs)
 * So here we have a good prediction and a low cross-entropy loss and below is a bad prediction and a high cross-entropy loss.
 * The raw values classes are ONE-HOT codding
 * <img src="https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks/0%24M%600RHA)%5BM%5DW%7BRGEE%5BWKVP.png" width="60%">
-#### Code Example
+#### Code Example with Numpy
 *
 ```python
-import torch
-import torch.nn as nn
 import numpy as np
 
 def cross_entropy(actual, predicted):
@@ -54,4 +52,15 @@ l2 = cross_entropy(Y, Y_pred_bad)
 print(f'Loss1 numpy: {l1:.4f}')
 print(f'Loss2 numpy: {l2:.4f}')
 
+```
+* * *
+#### Code Example with PyTorch
+##### Careful! nn.CrossEntropyLoss applies nn.LogSoftmax + nn.NLLLoss (negative log likelihood loss), therefore, no Softmax in the last layer. And, Y has class labels, not One-Hot, Y_pred has raw scores (logits), not Softmax
+*
+```python
+import torch
+import torch.nn as nn
+import numpy as np
+
+loss = 
 ```
