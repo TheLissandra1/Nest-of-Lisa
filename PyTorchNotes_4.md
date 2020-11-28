@@ -83,4 +83,4 @@ print(predictions2)
 * * *
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks/afda4798204f78b2fdcfe1fb09da4db.png">
 * Convert to a binary problem
-* <img src="https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks/cd2324db059211e2a532ced9b1a7d74.png" width="50&">
+<img src="https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks/cd2324db059211e2a532ced9b1a7d74.png" width="50&">
