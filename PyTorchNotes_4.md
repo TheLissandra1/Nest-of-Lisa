@@ -56,11 +56,28 @@ print(f'Loss2 numpy: {l2:.4f}')
 * * *
 #### Code Example with PyTorch
 ##### Careful! nn.CrossEntropyLoss applies nn.LogSoftmax + nn.NLLLoss (negative log likelihood loss), therefore, no Softmax in the last layer. And, Y has class labels, not One-Hot, Y_pred has raw scores (logits), not Softmax
+* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks/2b48b7a0ed3a94b641929a5da16928e.png" width = "60%">
 *
 ```python
 import torch
 import torch.nn as nn
 import numpy as np
 
-loss = 
+loss = nn.CrossEntropyLoss()
+
+Y = torch.tensor([0])
+# nsamples * nclasses = 1*3
+Y_pred_good = torch.tensor([2.0,1.0,0.1]) # raw values
+Y_pred_bad = torch.tensor([])
+
+l1 = loss(Y_pred_good, Y)
+l2 = loss(Y_pred_bad, Y)
+print(l1.item()) # only have one value so we can call item() 
+print(l2.item())
+
+_, predictions1 = torch.max(Y_pred_good, 1)
+_, predictions2 = torch.max(Y_pred_bad, 1)
+print(predictions1)
+print(predictions2)
 ```
+**
