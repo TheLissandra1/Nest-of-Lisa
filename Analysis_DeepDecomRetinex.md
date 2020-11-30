@@ -3,15 +3,15 @@
 * * * 
 * * * 
 
-### DecomNet 
+### I. DecomNet 
 
 * * * 
-#### Conv + ReLU + Sigmoid
+#### 1. Conv + ReLU + Sigmoid
 
 * * * 
-#### Forward
+#### 2. Forward
 * * *
-### RetinexNet
+### II. RetinexNet
 * * * 
 * * * 
 ### Training
