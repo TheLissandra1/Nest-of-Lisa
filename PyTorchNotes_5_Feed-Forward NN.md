@@ -106,8 +106,14 @@ with torch.no_grad():
         labels = labels.to(device)
         outputs = model(images)
         
-        # value, index
-        _, predictions = torch.max(outputs, 1)
+        # torch.max() will return max value and its index along dimension '1'
+        _, predictions = torch.max(outputs, 1) # we are interested in index because it's the class label so we don't need the first actual value
+        n_samples += labels.shape[0] # return the number of samples
+        n_correct += (predictions == labels).sum().item()
         
+    acc = 100.0 * n_correct/ n_samples
+    print(f'accuracy = {acc}')
 
 ```
+* * * 
+
