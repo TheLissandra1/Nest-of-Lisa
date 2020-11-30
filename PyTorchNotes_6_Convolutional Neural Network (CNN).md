@@ -10,6 +10,10 @@
     * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks/Y%7BSWVK4%241%5B%243DY(%24%5B%7B%25X(%5BI.png" width="50%">
 2. Max pooling layer: used to down-sampling, reduce computational costs by reducing the size of the image so this reduces the number of parameters our model has to learn. And it helps to avoid overfitting by providing an abstracted form of the input.
     * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks/Y%25T)K0CU7QVL3D%60~MM7W5%7BR.png" width="50%">
+3. Fully-connected layer: 全连接层（fully connected layers，FC）在整个卷积神经网络中起到“分类器”的作用。如果说卷积层、池化层和激活函数层等操作是将原始数据映射到隐层特征空间的话，全连接层则起到将学到的“分布式特征表示”映射到样本标记空间的作用。在实际使用中，全连接层可由卷积操作实现：对前层是全连接的全连接层可以转化为卷积核为1x1的卷积；而前层是卷积层的全连接层可以转化为卷积核为hxw的全局卷积，h和w分别为前层卷积结果的高和宽.(注1）
+   * 注1: 有关卷积操作“实现”全连接层，有必要多啰嗦几句。以VGG-16为例，对224x224x3的输入，最后一层卷积可得输出为7x7x512，如后层是一层含4096个神经元的FC，则可用卷积核为7x7x512x4096的全局卷积来实现这一全连接运算过程，其中该卷积核参数如下：“filter size = 7, padding = 0, stride = 1, D_in = 512, D_out = 4096”经过此卷积操作后可得输出为1x1x4096。如需再次叠加一个2048的FC，则可设定参数为“filter size = 1, padding = 0, stride = 1, D_in = 4096, D_out = 2048”的卷积层操作。
+   * 链接：https://www.zhihu.com/question/41037974/answer/150522307
+
 #### Code Example
 *
 ```python 
@@ -68,19 +72,19 @@ imshow(torchvision.utils.make_grid(images))
 class ConvNet(nn.Module):
     def __init__(self):
         super(ConvNet, self).__init__()
-        self.conv1 = nn.Conv2d(3, 6, 5)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 10)
+        self.conv1 = nn.Conv2d(3, 6, 5) # input channel is 3 because color img has 3 channels, and output_size is 6, kernel_size is 5, 5*5 kernel
+        self.pool = nn.MaxPool2d(2, 2) # pooling layer: with kernel_size is 2 and stride is 2 步长
+        self.conv2 = nn.Conv2d(6, 16, 5) # input_size必须和上一个输出一样都是6，这一层的output_size是16
+        self.fc1 = nn.Linear(16 * 5 * 5, 120) # 全连接层，用于分类，输出120个feature
+        self.fc2 = nn.Linear(120, 84) # 全连接层2， 输入120个feature，输出84个
+        self.fc3 = nn.Linear(84, 10) # 84->10 feature
 
     def forward(self, x):
         # -> n, 3, 32, 32
         x = self.pool(F.relu(self.conv1(x)))  # -> n, 6, 14, 14
         x = self.pool(F.relu(self.conv2(x)))  # -> n, 16, 5, 5
         x = x.view(-1, 16 * 5 * 5)            # -> n, 400
-        x = F.relu(self.fc1(x))               # -> n, 120
+        x = F.relu(self.fc1(x))               # -> n, 1205*5
         x = F.relu(self.fc2(x))               # -> n, 84
         x = self.fc3(x)                       # -> n, 10
         return x
