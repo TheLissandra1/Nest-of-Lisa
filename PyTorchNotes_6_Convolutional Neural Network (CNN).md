@@ -6,7 +6,10 @@
 * These layers are used to automatically learn some features from the images and then, at the end, we have one or more fully connected layers for actual classification tasks.
 #### Layers
 1. Convolutional layer
+    * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks/%60%7DG%25ICMTDH~P%7BU8%5B%5BJCAUMB.png" width="50%">
+    * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks/Y%7BSWVK4%241%5B%243DY(%24%5B%7B%25X(%5BI.png" width="50%">
 2. Max pooling layer: used to down-sampling, reduce computational costs by reducing the size of the image so this reduces the number of parameters our model has to learn. And it helps to avoid overfitting by providing an abstracted form of the input.
+    * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks/Y%25T)K0CU7QVL3D%60~MM7W5%7BR.png" width="50%">
 #### Code Example
 *
 ```python 
