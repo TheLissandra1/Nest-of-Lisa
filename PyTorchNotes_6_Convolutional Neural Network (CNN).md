@@ -1,5 +1,12 @@
 # Learning PyTorch Basic
 ## Convolutional Neural Network
+#### Intro
+* CNN is similar to ordinary neural networks and they are made up of neurons that have learned weights and biases.
+* The main difference is that CNN mainly work on image data and apply these so-called convolutional filters so a typical CNN contains: ConV + activation function (e.g. ReLU) and followed by a Pooling layer.
+* These layers are used to automatically learn some features from the images and then, at the end, we have one or more fully connected layers for actual classification tasks.
+#### Layers
+1. Convolutional layer
+2. Max pooling layer: used to down-sampling, reduce computational costs by reducing the size of the image so this reduces the number of parameters our model has to learn. And it helps to avoid overfitting by providing an abstracted form of the input.
 #### Code Example
 *
 ```python 
