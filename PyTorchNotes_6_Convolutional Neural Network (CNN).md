@@ -148,3 +148,5 @@ with torch.no_grad():
         print(f'Accuracy of {classes[i]}: {acc} %')           
            
 ```
+* * * 
+### 如果accuracy低，可以增加epoch值
