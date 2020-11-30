@@ -6,7 +6,9 @@
 1. In the example below, we want a new classification and we need to rebuild the fully-connected layers part.
 #### Application
 * E.g. If you want your model which can classify animal imgs previously now can be used to classify other imgs, modify the final part of the model.
-#### Code Example
+#### Code Example: famous ResNet CNN, 18 layers to classify images
+* 展示了如何用 Scheduler 来改变learning rate, from torch.optim import lr_scheduler
+* 展示了如何实现transfer learning 
 *
 ```python
 import torch
