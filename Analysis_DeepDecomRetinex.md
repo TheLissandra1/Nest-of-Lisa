@@ -6,10 +6,10 @@
 ### I. DecomNet 
 
 * * * 
-#### 1. Conv + ReLU + Sigmoid
+#### * 1. Conv + ReLU + Sigmoid
 
 * * * 
-#### 2. Forward
+#### * 2. Forward
 * * *
 ### II. RetinexNet
 * * * 
