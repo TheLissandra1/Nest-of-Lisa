@@ -4,7 +4,7 @@
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/SI.png">
 * **Q：What is element-wise multiplication?**
 * **A：In mathematics, the Hadamard product (also known as the element-wise, entrywise or Schur product) is a binary operation that takes two matrices of the same dimensions and produces another matrix of the same dimension as the operands, where each element i, j is the product of elements i, j of the original two matrices.**
-    <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/element-wise%20multiplication.png" width="50%">
+*  <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/element-wise%20multiplication.png" width="50%">
 * Reflectance describes the intrinsic property of captured objects, which is considered to be consistent under any lightness conditions. The illumination represents the various
 lightness on objects. On low-light images, it usually suffers from darkness and unbalanced illumination distributions.
 * * * 
@@ -47,11 +47,22 @@ lightness on objects. On low-light images, it usually suffers from darkness and 
 **1. The loss *L* consists of 3 terms: reconstruction loss *Lrecon*, invariable reflectance loss *Lir*, and illumination smoothness loss *Lis*:**
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/loss.png" width='80%'>
 * where *lir* and *lis* denote the coefficients to balance the consistency of reflectance and the smoothness of illumination.
+
 * **1.1 The *Lrecon* is defined as:**
+* This is the regularization which prevent the model from doing too well on training data.
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/lossRecon.png" width='90%'>
 * Based on the assumption that both *Rlow* and *Rhigh* can reconstruct the image with the corresponding illumination map, the reconstruction loss *Lrecon* is formulated as above.
+* The formula means that *Lrecon* equals to the sum of (coefficients of every pixel muliply the L1 Norm of *Ri* element-wise multiply *Ij* minus *Sj*), where *i* and *j* are low and normal index.?
+* L1 Norm: the sum of absolute values of differences.
+* **Q: Why we use L1 Norm here?**
+  **A: To sparse the weights, thus we can complete feature selection and add model interpretability. And if compared with L2 norm, L1 create less features and minimize the weights much faster than L2; L1 is also Robust to abnormal values.
+  
+  
 * **1.2 Invariable reflectance loss *Lir* is introduced to constrain the consistency of reflectance:**
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/LossInvariableReflectance.png" width="70%">
+* **My comments: This is contradictory because the author mentioned that low light and normal images in his dataset share the same reflectance. So I assume that there must be some color distorsions when preprocessing normal light images into low light images, thus we have calculate differences between two abstracted Reflectance components.**
+
+
 * **1.3 The *Lis* is defined as:**
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/LossIlluminationSmoothness.png" width="80%">
 * where *∇* denotes the gradient including *∇h (horizontal)* and *∇v (vertical)*, and *lg* denotes the coefficient balancing the strength of structure-awareness. With the weight *exp(−lg∇Ri)*, *Lis* loosens the constraint for smoothness where the gradient of reflectance is steep, in other words, where image structures locate and where the illumination should be discontinuous.
@@ -62,10 +73,14 @@ lightness on objects. On low-light images, it usually suffers from darkness and 
 ##### Enhance-Net Code Interpretation
 * 
 ```python
+
+
 ```
 * * * 
 * 
 ```python
+
+
 ```
 ### II.2 Denoise on Reflectance
 * The amplified noise, which often occurs in low-light conditions, is removed from reflectance if needed.
