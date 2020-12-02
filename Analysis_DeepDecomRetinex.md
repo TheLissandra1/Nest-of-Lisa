@@ -4,7 +4,7 @@
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/SI.png">
 * **Q：What is element-wise multiplication?**
 * **A：In mathematics, the Hadamard product (also known as the element-wise, entrywise or Schur product) is a binary operation that takes two matrices of the same dimensions and produces another matrix of the same dimension as the operands, where each element i, j is the product of elements i, j of the original two matrices.**
-    <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/element-wise%20multiplication.png" width="70%">
+    <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/element-wise%20multiplication.png" width="50%">
 * Reflectance describes the intrinsic property of captured objects, which is considered to be consistent under any lightness conditions. The illumination represents the various
 lightness on objects. On low-light images, it usually suffers from darkness and unbalanced illumination distributions.
 * * * 
