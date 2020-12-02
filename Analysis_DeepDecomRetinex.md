@@ -6,7 +6,7 @@
 lightness on objects. On low-light images, it usually suffers from darkness and unbalanced illumination distributions.
 * * * 
 ## Pipeline
-* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/Retinex-Net.png" width="60%">
+* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/Retinex-Net.png" width="90%">
 
 ## Code Interpretation
 * 
