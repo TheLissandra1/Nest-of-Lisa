@@ -60,7 +60,7 @@ lightness on objects. On low-light images, it usually suffers from darkness and 
   
 * **1.2 Invariable reflectance loss *Lir* is introduced to constrain the consistency of reflectance:**
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/LossInvariableReflectance.png" width="70%">
-* **My comments: This is contradictory because the author mentioned that low light and normal images in his dataset share the same reflectance. So I assume that there must be some color distorsions when preprocessing normal light images into low light images, thus we have calculate differences between two abstracted Reflectance components.**
+* **My comments: The author mentioned that low light and normal images should share the same reflectance in any conditions because reflectance is the intrinsic property of objects. However, there might be color differences between normal and low light conditions. And that's why we need to minimize this constaint *Lir* to ensure image pairs have same Reflectance before the next step--Enhance-Net.**
 
 
 * **1.3 The *Lis* is defined as:**
