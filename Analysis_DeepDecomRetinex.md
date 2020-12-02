@@ -86,7 +86,7 @@ class DecomNet(nn.Module):
 * Subscripts in *i = low, normal* means this *lis* calculation formula works on both low and normal light images.
 * L1 Norm: the sum of absolute values of differences.
 * **Q: Why we use L1 Norm here?**
-  **A: To sparse the weights, thus we can complete feature selection and add model interpretability. And if compared with L2 norm, L1 create less features and minimize the weights much faster than L2; L1 is also Robust to abnormal values.
+  **A: To sparse the weights, thus we can complete feature selection and add model interpretability. And if compared with L2 norm, L1 create less features and minimize the weights much faster than L2; L1 is also Robust to abnormal values.**
 * And, if we rethink about *Ri* in *Lrecon* after viewing *Lir*, we know that Reflectance of low and normal images are same due to constraints, so we don't need to care too much about *Ri* here.
 * Therefore, if the input is:
   1. low light image, then *Lrecon* = ∑∑ λij*||Reflectance o Illumination of low image- low image||1.
