@@ -52,21 +52,30 @@ lightness on objects. On low-light images, it usually suffers from darkness and 
 * This is the regularization which prevent the model from doing too well on training data.
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/lossRecon.png" width='90%'>
 * Based on the assumption that both *Rlow* and *Rhigh* can reconstruct the image with the corresponding illumination map, the reconstruction loss *Lrecon* is formulated as above.
-* The formula means that *Lrecon* equals to the sum of (coefficients of every pixel muliply the L1 Norm of *Ri* element-wise multiply *Ij* minus *Sj*), where *i* and *j* are low and normal index.?
+* The formula means that *Lrecon* equals to the sum of (coefficients of every pixel muliply the L1 Norm of *Ri* element-wise multiply *Ij* minus *Sj*), where *i* and *j* are low and normal index.
+* Subscripts in *i = low, normal* means this *lis* calculation formula works on both low and normal light images.
 * L1 Norm: the sum of absolute values of differences.
 * **Q: Why we use L1 Norm here?**
   **A: To sparse the weights, thus we can complete feature selection and add model interpretability. And if compared with L2 norm, L1 create less features and minimize the weights much faster than L2; L1 is also Robust to abnormal values.
-  
-  
+* And, if we rethink about *Ri* in *Lrecon* after viewing *Lir*, we know that Reflectance of low and normal images are same due to constraints, so we don't need to care too much about *Ri* here.
+* Therefore, if the input is:
+  1. low light image, then *Lrecon* = ∑∑ λij*||Reflectance o Illumination of low image- low image||1.
+  2. normal light image, then *Lrecon* = ∑∑ λij*||Reflectance o Illumination of normal image- normal image||1.
+* ```python
+  # paste some code here
+  ```
 * **1.2 Invariable reflectance loss *Lir* is introduced to constrain the consistency of reflectance:**
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/LossInvariableReflectance.png" width="70%">
-* **My comments: The author mentioned that low light and normal images should share the same reflectance in any conditions because reflectance is the intrinsic property of objects. However, there might be color differences between normal and low light conditions. And that's why we need to minimize this constaint *Lir* to ensure image pairs have same Reflectance before the next step--Enhance-Net.**
+* **My comments: The author mentioned that low light and normal images should share the same reflectance in any conditions because reflectance is the intrinsic property of objects. However, there might be color differences between normal and low light conditions. And that's why we need to minimize this constraint *Lir* to ensure image pairs have same Reflectance before the next step--Enhance-Net.**
 
 
 * **1.3 The *Lis* is defined as:**
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/LossIlluminationSmoothness.png" width="80%">
-* where *∇* denotes the gradient including *∇h (horizontal)* and *∇v (vertical)*, and *lg* denotes the coefficient balancing the strength of structure-awareness. With the weight *exp(−lg∇Ri)*, *Lis* loosens the constraint for smoothness where the gradient of reflectance is steep, in other words, where image structures locate and where the illumination should be discontinuous.
+* where *∇* denotes the gradient including *∇h (horizontal)* and *∇v (vertical)*, and *lg* denotes the coefficient balancing the strength of structure-awareness. With the weight *exp(−lg∇Ri)*, *Lis* loosens the constraint for smoothness where the gradient of reflectance is steep, in other words, where image structures locate and where the illumination should be discontinuous. 
+* Subscripts in *i = low, normal* means this *lis* calculation formula works on both low and normal light images.
 ### II.1 Enhance-Net
+#### Background Theory
+* One basic assumption for illumination map is the local consistency and the structure- awareness. In other words, a good solution for illumination map should be smooth in textural details while can still preserve the overall structure boundary.
 * The Enhance-Net takes an overall framework of encoder-decoder. A multi-scale concatenation is used to maintain the global consistency of illumination with context information in large regions while tuning the local distributions with focused attention.
 * By mitigating the effect of total variation at the places where gradients are strong, the constraint successfully smooths the illumination map and retains the main structures.
 * * * 
