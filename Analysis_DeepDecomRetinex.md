@@ -8,19 +8,21 @@ lightness on objects. On low-light images, it usually suffers from darkness and 
 ## Pipeline
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/Retinex-Net.png" width="90%">
 
-## Code Interpretation
-* 
+## Dataset Preview
+* low light image: resolution: 600*400 pixel (width*height), created by Adobe Light-room, .png format
+* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/lowlightimg2.png">
 * * * 
-* 
+* corresponding normal light image: resolution: 600*400 pixel (width*height), created by Adobe Light-room, .png format
+* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/2.png">
 ```python
 ```
 * * * 
-### I. DecomNet 
+### I. Decom-Net 
 * It takes in pairs of low/normal-light images at the training stage, while only low-light images as input at the training at the testing stage.
 * With the constraints that the low/normal-light images share the same reflectance and the smoothness of illumination, Decom-Net learns to extract the consistent R between variously illuminated images in a data-driven way.
 * During training, there is no need to provide the ground truth (正确的标记) of the reflectance and illumination. Only requisite knowledge including the consistency of reflectance and the smoothness of illumination map is embedded into the network as loss functions. 
 * Thus, the decomposition of our network is automatically learned from paired low/normal-light images, and by nature suitable for depicting the light variation among the images under different light conditions.
-##### Code Interpretation
+##### Decom-Net Code Interpretation
 * Decom-Net takes the low-light image Slow and the normal-light one Snormal as input, then estimates the reflectance Rlow and the illumination Ilow for Slow, as well as Rnormal and Inormal for Snormal, respectively. 
 * 
 ```python
@@ -35,6 +37,7 @@ lightness on objects. On low-light images, it usually suffers from darkness and 
 * The Enhance-Net takes an overall framework of encoder-decoder. A multi-scale concatenation is used to maintain the global consistency of illumination with context information in large regions while tuning the local distributions with focused attention.
 * By mitigating the effect of total variation at the places where gradients are strong, the constraint successfully smooths the illumination map and retains the main structures.
 * * * 
+##### Enhance-Net Code Interpretation
 * 
 ```python
 ```
