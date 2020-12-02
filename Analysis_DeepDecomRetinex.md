@@ -251,9 +251,183 @@ class RetinexNet(nn.Module):
 
 ### Training
 * * * 
+* 
+```python
+    def train(self,
+              train_low_data_names,
+              train_high_data_names,
+              eval_low_data_names,
+              batch_size,
+              patch_size, epoch,
+              lr,
+              vis_dir,
+              ckpt_dir,
+              eval_every_epoch,
+              train_phase):
+        assert len(train_low_data_names) == len(train_high_data_names)
+        numBatch = len(train_low_data_names) // int(batch_size)
+
+        # Create the optimizers
+        self.train_op_Decom   = optim.Adam(self.DecomNet.parameters(),
+                                           lr=lr[0], betas=(0.9, 0.999))
+        self.train_op_Relight = optim.Adam(self.RelightNet.parameters(),
+                                           lr=lr[0], betas=(0.9, 0.999))
+
+        # Initialize a network if its checkpoint is available
+        self.train_phase= train_phase
+        load_model_status, global_step = self.load(ckpt_dir)
+        if load_model_status:
+            iter_num    = global_step
+            start_epoch = global_step // numBatch
+            start_step  = global_step % numBatch
+            print("Model restore success!")
+        else:
+            iter_num    = 0
+            start_epoch = 0
+            start_step  = 0
+            print("No pretrained model to restore!")
+
+        print("Start training for phase %s, with start epoch %d start iter %d : " %
+             (self.train_phase, start_epoch, iter_num))
+
+        start_time = time.time()
+        image_id   = 0
+        for epoch in range(start_epoch, epoch):
+            self.lr = lr[epoch]
+            # Adjust learning rate
+            for param_group in self.train_op_Decom.param_groups:
+                param_group['lr'] = self.lr
+            for param_group in self.train_op_Relight.param_groups:
+                param_group['lr'] = self.lr
+            for batch_id in range(start_step, numBatch):
+                # Generate training data for a batch
+                batch_input_low = np.zeros((batch_size, 3, patch_size, patch_size,), dtype="float32")
+                batch_input_high= np.zeros((batch_size, 3, patch_size, patch_size,), dtype="float32")
+                for patch_id in range(batch_size):
+                    # Load images
+                    train_low_img = Image.open(train_low_data_names[image_id])
+                    train_low_img = np.array(train_low_img, dtype='float32')/255.0
+                    train_high_img= Image.open(train_high_data_names[image_id])
+                    train_high_img= np.array(train_high_img, dtype='float32')/255.0
+                    # Take random crops
+                    h, w, _        = train_low_img.shape
+                    x = random.randint(0, h - patch_size)
+                    y = random.randint(0, w - patch_size)
+                    train_low_img = train_low_img[x: x + patch_size, y: y + patch_size, :]
+                    train_high_img= train_high_img[x: x + patch_size, y: y + patch_size, :]
+                    # Data augmentation
+                    if random.random() < 0.5:
+                        train_low_img = np.flipud(train_low_img)
+                        train_high_img= np.flipud(train_high_img)
+                    if random.random() < 0.5:
+                        train_low_img = np.fliplr(train_low_img)
+                        train_high_img= np.fliplr(train_high_img)
+                    rot_type = random.randint(1, 4)
+                    if random.random() < 0.5:
+                        train_low_img = np.rot90(train_low_img, rot_type)
+                        train_high_img= np.rot90(train_high_img, rot_type)
+                    # Permute the images to tensor format
+                    train_low_img = np.transpose(train_low_img, (2, 0, 1))
+                    train_high_img= np.transpose(train_high_img, (2, 0, 1))
+                    # Prepare the batch
+                    batch_input_low[patch_id, :, :, :] = train_low_img
+                    batch_input_high[patch_id, :, :, :]= train_high_img
+                    self.input_low = batch_input_low
+                    self.input_high= batch_input_high
+
+                    image_id = (image_id + 1) % len(train_low_data_names)
+                    if image_id == 0:
+                        tmp = list(zip(train_low_data_names, train_high_data_names))
+                        random.shuffle(list(tmp))
+                        train_low_data_names, train_high_data_names = zip(*tmp)
+
+
+                # Feed-Forward to the network and obtain loss
+                self.forward(self.input_low,  self.input_high)
+                if self.train_phase == "Decom":
+                    self.train_op_Decom.zero_grad()
+                    self.loss_Decom.backward()
+                    self.train_op_Decom.step()
+                    loss = self.loss_Decom.item()
+                elif self.train_phase == "Relight":
+                    self.train_op_Relight.zero_grad()
+                    self.loss_Relight.backward()
+                    self.train_op_Relight.step()
+                    loss = self.loss_Relight.item()
+
+                print("%s Epoch: [%2d] [%4d/%4d] time: %4.4f, loss: %.6f" \
+                      % (train_phase, epoch + 1, batch_id + 1, numBatch, time.time() - start_time, loss))
+                iter_num += 1
+
+            # Evaluate the model and save a checkpoint file for it
+            if (epoch + 1) % eval_every_epoch == 0:
+                self.evaluate(epoch + 1, eval_low_data_names,
+                              vis_dir=vis_dir, train_phase=train_phase)
+                self.save(iter_num, ckpt_dir)
+
+        print("Finished training for phase %s." % train_phase)
+```
 * * * 
 ### Prediction
 * * * 
+*
+```python
+    def predict(self,
+                test_low_data_names,
+                res_dir,
+                ckpt_dir):
+
+        # Load the network with a pre-trained checkpoint
+
+        self.train_phase= 'Decom'
+        load_model_status, _ = self.load(ckpt_dir)
+        if load_model_status:
+            print(self.train_phase, "  : Model restore success!")
+        else:
+            print("No pretrained model to restore!")
+            raise Exception
+        self.train_phase= 'Relight'
+        load_model_status, _ = self.load(ckpt_dir)
+        if load_model_status:
+             print(self.train_phase, ": Model restore success!")
+        else:
+            print("No pretrained model to restore!")
+            raise Exception
+
+        # Set this switch to True to also save the reflectance and shading maps
+        save_R_L = False
+        
+        # Predict for the test images
+        for idx in range(len(test_low_data_names)):
+            test_img_path  = test_low_data_names[idx]
+            test_img_name  = test_img_path.split('/')[-1]
+            print('Processing ', test_img_name)
+            test_low_img   = Image.open(test_img_path)
+            test_low_img   = np.array(test_low_img, dtype="float32")/255.0
+            test_low_img   = np.transpose(test_low_img, (2, 0, 1))
+            input_low_test = np.expand_dims(test_low_img, axis=0)
+
+            self.forward(input_low_test, input_low_test)
+            result_1 = self.output_R_low
+            result_2 = self.output_I_low
+            result_3 = self.output_I_delta
+            result_4 = self.output_S
+            input = np.squeeze(input_low_test)
+            result_1 = np.squeeze(result_1)
+            result_2 = np.squeeze(result_2)
+            result_3 = np.squeeze(result_3)
+            result_4 = np.squeeze(result_4)
+            if save_R_L:
+                cat_image= np.concatenate([input, result_1, result_2, result_3, result_4], axis=2)
+            else:
+                cat_image= np.concatenate([input, result_4], axis=2)
+
+            cat_image = np.transpose(cat_image, (1, 2, 0))
+            # print(cat_image.shape)
+            im = Image.fromarray(np.clip(cat_image * 255.0, 0, 255.0).astype('uint8'))
+            filepath = res_dir + '/' + test_img_name
+            im.save(filepath[:-4] + '.jpg')
+```
 * * * 
 ### Evaluation
 * * * 
