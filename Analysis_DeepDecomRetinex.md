@@ -86,7 +86,7 @@ class DecomNet(nn.Module):
 * Subscripts in *i = low, normal* means this *lis* calculation formula works on both low and normal light images.
 * L1 Norm: the sum of absolute values of differences.
 * **Q: Why we use L1 Norm here?**
-  **A: To sparse the weights, thus we can complete feature selection and add model interpretability. And if compared with L2 norm, L1 create less features and minimize the weights much faster than L2; L1 is also Robust to abnormal values.**
+  * **A: To sparse the weights, thus we can complete feature selection and add model interpretability. And if compared with L2 norm, L1 create less features and minimize the weights much faster than L2; L1 is also Robust to abnormal values.**
 * And, if we rethink about *Ri* in *Lrecon* after viewing *Lir*, we know that Reflectance of low and normal images are same due to constraints, so we don't need to care too much about *Ri* here.
 * Therefore, if the input is:
   1. low light image, then *Lrecon* = ∑∑ λij*||Reflectance o Illumination of low image- low image||1.
@@ -272,7 +272,10 @@ class RetinexNet(nn.Module):
                                            lr=lr[0], betas=(0.9, 0.999))
         self.train_op_Relight = optim.Adam(self.RelightNet.parameters(),
                                            lr=lr[0], betas=(0.9, 0.999))
-
+```
+* **Q:↑Why use Adam optimizer here?**
+    * **A: **
+```python
         # Initialize a network if its checkpoint is available
         self.train_phase= train_phase
         load_model_status, global_step = self.load(ckpt_dir)
@@ -431,7 +434,8 @@ class RetinexNet(nn.Module):
 * * * 
 ### Evaluation
 * * * 
-* #Code example# 
+* **Code example**
+
 ```Python
     def evaluate(self, epoch_num, eval_low_data_names, vis_dir, train_phase):
         print("Evaluating for phase %s / epoch %d..." % (train_phase, epoch_num))
