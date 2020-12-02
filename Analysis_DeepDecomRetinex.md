@@ -9,10 +9,10 @@ lightness on objects. On low-light images, it usually suffers from darkness and 
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/Retinex-Net.png" width="90%">
 
 ## Dataset Preview
-* **low light image: resolution: 600 * 400 pixel (width * height), created by Adobe Light-room, .png format
+*  **low light image: resolution: 600 * 400 pixel (width * height), created by Adobe Light-room, .png format**
 * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/lowlightimg2.png">
 * * * 
-* **corresponding normal light image: resolution: 600 * 400 pixel (width * height), created by Adobe Light-room, .png format
+*  **corresponding normal light image: resolution: 600 * 400 pixel (width * height), created by Adobe Light-room, .png format**
 * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/2.png">
 ```python
 ```
@@ -41,7 +41,7 @@ lightness on objects. On low-light images, it usually suffers from darkness and 
 ```
 * * *
 #### Loss Functions
-**1. The loss *L* consists of 3 terms: reconstruction loss *Lrecon*, invariable reflectance loss *Lir*, and illumination smoothness loss *Lis*:
+**1. The loss *L* consists of 3 terms: reconstruction loss *Lrecon*, invariable reflectance loss *Lir*, and illumination smoothness loss *Lis*:**
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/loss.png">
 * 
 ### II.1 Enhance-Net
