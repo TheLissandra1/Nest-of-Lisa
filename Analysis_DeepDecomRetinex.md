@@ -75,24 +75,24 @@ class DecomNet(nn.Module):
         return R, L
 ```
 * * *
-#### Loss Functions
-**1. The loss *L* consists of 3 terms: reconstruction loss *Lrecon*, invariable reflectance loss *Lir*, and illumination smoothness loss *Lis*:**
-* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/loss.png" width='80%'>
-* where *lir* and *lis* denote the coefficients to balance the consistency of reflectance and the smoothness of illumination.
+### Loss Functions
+> **1. The loss *L* consists of 3 terms: reconstruction loss *Lrecon*, invariable reflectance loss *Lir*, and illumination smoothness loss *Lis*:**
+    * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/loss.png" width='80%'>
+    * where *lir* and *lis* denote the coefficients to balance the consistency of reflectance and the smoothness of illumination.
 
-* **1.1 The *Lrecon* is defined as:**
-* This is the regularization which prevent the model from doing too well on training data.
-* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/lossRecon.png" width='90%'>
-* Based on the assumption that both *Rlow* and *Rhigh* can reconstruct the image with the corresponding illumination map, the reconstruction loss *Lrecon* is formulated as above.
-* The formula means that *Lrecon* equals to the sum of (coefficients of every pixel muliply the L1 Norm of *Ri* element-wise multiply *Ij* minus *Sj*), where *i* and *j* are low and normal index.
-* Subscripts in *i = low, normal* means this *lis* calculation formula works on both low and normal light images.
-* L1 Norm: the sum of absolute values of differences.
-* **Q: Why we use L1 Norm here?**
-  * **A: To sparse the weights, thus we can complete feature selection and add model interpretability. And if compared with L2 norm, L1 create less features and minimize the weights much faster than L2; L1 is also Robust to abnormal values.**
-* And, if we rethink about *Ri* in *Lrecon* after viewing *Lir*, we know that Reflectance of low and normal images are same due to constraints, so we don't need to care too much about *Ri* here.
-* Therefore, if the input is:
-  1. low light image, then *Lrecon* = ∑∑ λij*||Reflectance o Illumination of low image- low image||1.
-  2. normal light image, then *Lrecon* = ∑∑ λij*||Reflectance o Illumination of normal image- normal image||1.
+> >**1.1 The *Lrecon* is defined as:**
+    * This is the regularization which prevent the model from doing too well on training data.
+    * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/lossRecon.png" width='90%'>
+    * Based on the assumption that both *Rlow* and *Rhigh* can reconstruct the image with the corresponding illumination map, the reconstruction loss *Lrecon* is formulated as above.
+    * The formula means that *Lrecon* equals to the sum of (coefficients of every pixel muliply the L1 Norm of *Ri* element-wise multiply *Ij* minus *Sj*), where *i* and *j* are low and normal index.
+    * Subscripts in *i = low, normal* means this *lis* calculation formula works on both low and normal light images.
+    * L1 Norm: the sum of absolute values of differences.
+> > >* **Q: Why we use L1 Norm here?**
+     * **A: To sparse the weights, thus we can complete feature selection and add model interpretability. And if compared with L2 norm, L1 create less features and minimize the            weights much faster than L2; L1 is also Robust to abnormal values.**
+        * And, if we rethink about *Ri* in *Lrecon* after viewing *Lir*, we know that Reflectance of low and normal images are same due to constraints, so we don't need to care           too much about *Ri* here.
+        * Therefore, if the input is:
+         1. low light image, then *Lrecon* = ∑∑ λij*||Reflectance o Illumination of low image- low image||1.
+         2. normal light image, then *Lrecon* = ∑∑ λij*||Reflectance o Illumination of normal image- normal image||1.
 * ```python
   # paste some code here
   
