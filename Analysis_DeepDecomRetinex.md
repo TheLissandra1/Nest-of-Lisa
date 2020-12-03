@@ -77,8 +77,8 @@ class DecomNet(nn.Module):
 * * *
 ### Loss Functions
 * **1. The loss *L* consists of 3 terms: reconstruction loss *Lrecon*, invariable reflectance loss *Lir*, and illumination smoothness loss *Lis*:**
-    > <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/loss.png" width='80%'>
-    > where *lir* and *lis* denote the coefficients to balance the consistency of reflectance and the smoothness of illumination.
+    >  <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/loss.png" width='80%'>
+    >  where *lir* and *lis* denote the coefficients to balance the consistency of reflectance and the smoothness of illumination.
 
 *  **1.1 The *Lrecon* is defined as:**
     > This is the regularization which prevent the model from doing too well on training data.
