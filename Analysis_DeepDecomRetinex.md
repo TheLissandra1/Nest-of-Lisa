@@ -12,11 +12,12 @@ lightness on objects. On low-light images, it usually suffers from darkness and 
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/Retinex-Net.png" width="90%">
 
 ## Dataset Preview
-*  **low light image: resolution: 600 * 400 pixel (width * height), created by Adobe Light-room, .png format**
-* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/lowlightimg2.png">
-* * * 
-*  **corresponding normal light image: resolution: 600 * 400 pixel (width * height), created by Adobe Light-room, .png format**
-* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/2.png">
+*
+|  | **Low light image** | **Normal light image**|
+| :--: | :-- : | :--: |
+| **detail** | 600 * 400 pixel (width * height), created by Adobe Light-room, .png format** |
+| <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/lowlightimg2.png"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/2.png"> |
+* 
 ```python
 ```
 * * * 
