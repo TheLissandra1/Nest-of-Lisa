@@ -77,42 +77,41 @@ class DecomNet(nn.Module):
 * * *
 ### Loss Functions
 * **1. The loss *L* consists of 3 terms: reconstruction loss *Lrecon*, invariable reflectance loss *Lir*, and illumination smoothness loss *Lis*:**
-    >  <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/loss.png" width='80%'>
-    >  where *lir* and *lis* denote the coefficients to balance the consistency of reflectance and the smoothness of illumination.
+    > * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/loss.png" width='80%'>
+    > * where *lir* and *lis* denote the coefficients to balance the consistency of reflectance and the smoothness of illumination.
 
 *  **1.1 The *Lrecon* is defined as:**
-    > This is the regularization which prevent the model from doing too well on training data.
-    > <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/lossRecon.png" width='90%'>
-    > Based on the assumption that both *Rlow* and *Rhigh* can reconstruct the image with the corresponding illumination map, the reconstruction loss *Lrecon* is formulated as above.
-    > The formula means that *Lrecon* equals to the sum of (coefficients of every pixel muliply the L1 Norm of *Ri* element-wise multiply *Ij* minus *Sj*), where *i* and *j* are low and normal index.
-    > Subscripts in *i = low, normal* means this *lis* calculation formula works on both low and normal light images.
+    > * This is the regularization which prevent the model from doing too well on training data.
+    > * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/lossRecon.png" width='90%'>
+    > * Based on the assumption that both *Rlow* and *Rhigh* can reconstruct the image with the corresponding illumination map, the reconstruction loss *Lrecon* is formulated as above.
+    > * The formula means that *Lrecon* equals to the sum of (coefficients of every pixel muliply the L1 Norm of *Ri* element-wise multiply *Ij* minus *Sj*), where *i* and *j* are low and normal index.
+    > * Subscripts in *i = low, normal* means this *lis* calculation formula works on both low and normal light images.
 * **Q: Why we use L1 Norm here?**
-    > **A: To sparse the weights, thus we can complete feature selection and add model interpretability. And if compared with L2 norm, L1 create less features and minimize the            weights much faster than L2; L1 is also Robust to abnormal values.**
-    > And, if we rethink about *Ri* in *Lrecon* after viewing *Lir*, we know that Reflectance of low and normal images are same due to constraints, so we don't need to care           too much about *Ri* here.
-    > Therefore, if the input is:
-         1. low light image, then *Lrecon* = ∑∑ λij * || Reflectance o Illumination of low image - low image ||1.
-         2. normal light image, then *Lrecon* = ∑∑ λij * || Reflectance o Illumination of normal image - normal image ||1.
+    > * **A: To sparse the weights, thus we can complete feature selection and add model interpretability. And if compared with L2 norm, L1 create less features and minimize the            weights much faster than L2; L1 is also Robust to abnormal values.**
+    > * And, if we rethink about *Ri* in *Lrecon* after viewing *Lir*, we know that Reflectance of low and normal images are same due to constraints, so we don't need to care           too much about *Ri* here.
+    > * Therefore, if the input is:
+        1. low light image, then *Lrecon* = ∑∑ λij * || Reflectance o Illumination of low image - low image ||1.
+        2. normal light image, then *Lrecon* = ∑∑ λij * || Reflectance o Illumination of normal image - normal image ||1.
     > * ```python
         # paste some code here
   
         ```
 * **1.2 Invariable reflectance loss *Lir* is introduced to constrain the consistency of reflectance:**
-    > <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/LossInvariableReflectance.png" width="70%">
-    > **My comments: The author mentioned that low light and normal images should share the same reflectance in any conditions because reflectance is the intrinsic property of objects. However, there might be color differences between normal and low light conditions. And that's why we need to minimize this constraint *Lir* to ensure image pairs have same Reflectance before the next step--Enhance-Net.**
+    > * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/LossInvariableReflectance.png" width="70%">
+    > * **My comments: The author mentioned that low light and normal images should share the same reflectance in any conditions because reflectance is the intrinsic property of objects. However, there might be color differences between normal and low light conditions. And that's why we need to minimize this constraint *Lir* to ensure image pairs have same Reflectance before the next step--Enhance-Net.**
     > * ```python
        # paste some code here
        ```
   
 
 * **1.3 The *Lis* is defined as:**
-    >Total variation minimization (TV), which minimizes the gradient of the whole image, is often used as smoothness prior for various image restoration tasks. However, directly using TV as loss function fails at regions where the image has strong structures or where lightness changes drastically. It is due to the uniform reduction for gradient of illumination map regardless of whether the region is of textual details or strong boundaries. In other words, TV loss is structure-blindness. The illumination is blurred and strong black edges are left on reflectance, as illustrated below.
-    > <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/TV.png" width="60%">
-    > To make the loss aware of the image structure, the original TV function is weighted with the gradient of reflectance map. The final Lis is formulated as:
-    > <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/LossIlluminationSmoothness.png" width="80%">
-    > where *∇* denotes the gradient including *∇h (horizontal)* and *∇v (vertical)*, and *lg* denotes the coefficient balancing the strength of structure-awareness. With the weight *exp(−lg∇Ri)*, *Lis* loosens the constraint for smoothness where the gradient of reflectance is steep, in other words, where image structures locate and where the illumination should be discontinuous. 
-    > Subscripts in *i = low, normal* means this *lis* calculation formula works on both low and normal light images.
-    > Our structure-aware smoothness loss is weighted by reflectance.
-* ```python
+    > * Total variation minimization (TV), which minimizes the gradient of the whole image, is often used as smoothness prior for various image restoration tasks. However, directly using TV as loss function fails at regions where the image has strong structures or where lightness changes drastically. It is due to the uniform reduction for gradient of illumination map regardless of whether the region is of textual details or strong boundaries. In other words, TV loss is structure-blindness. The illumination is blurred and strong black edges are left on reflectance, as illustrated below.
+    > * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/TV.png" width="90%">
+    > * To make the loss aware of the image structure, the original TV function is weighted with the gradient of reflectance map. The final Lis is formulated as:
+    > * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/LossIlluminationSmoothness.png" width="80%">
+    > * where *∇* denotes the gradient including *∇h (horizontal)* and *∇v (vertical)*, and *lg* denotes the coefficient balancing the strength of structure-awareness. With the weight *exp(−lg∇Ri)*, *Lis* loosens the constraint for smoothness where the gradient of reflectance is steep, in other words, where image structures locate and where the illumination should be discontinuous. Subscripts in *i = low, normal* means this *lis* calculation formula works on both low and normal light images.
+    > * Our structure-aware smoothness loss is weighted by reflectance.
+    > * ```python
   # paste some code here
       def gradient(self, input_tensor, direction):
         self.smooth_kernel_x = torch.FloatTensor([[0, 0], [-1, 1]]).view((1, 1, 2, 2)).cuda()
