@@ -17,9 +17,6 @@ lightness on objects. On low-light images, it usually suffers from darkness and 
 | image | Low light image | Normal light image |
 | :----: | :----: | :----: |
 | detail | 600 * 400 pixel (width * height), created by Adobe Light-room, .png format | 600 * 400 pixel (width * height), created by Adobe Light-room, .png format |
-
-
-
 | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/lowlightimg2.png"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/2.png"> |
 * 
 ```python
