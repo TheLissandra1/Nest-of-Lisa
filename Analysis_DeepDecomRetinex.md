@@ -533,14 +533,14 @@ It consists of 3 down-sampling blocks and 3 up-sampling ones.
      are strong, the constraint successfully smooths the illumination map and retains the main structures.
 
 ### Q7.1 Why the loss function is adaptive? How does it achieve to be adaptive to illumination?
-* A:  Encoder-decoder architecture can obtain context information in large regions. So by down-sampling achieved by convolutional layer of which stride=2, the net can
-      have a perspective of the large-scale illumination distribution, and this is how to achieve adaptive adjustment.
-      
-      Then it uses the illumination information in large-scale and then does up-sampling to reconstruct local illumination distribution. Skip connections are used here to deal 
-      with the problem that when doing up-sampling, it has to find good information to fill in blank pixels. By skip connections, we can reuse the features in the original 
-      image, i.e., we construct from a feature map with low resolution and a high dimension and we always use deconvolution implement reconstruction. However, when kernel 
-      size/stride is not equal to an integer, checkerboard artifacts (image will be like grids) occur. So we need to resize by Nearest Neighbour Interpolation at first, then 
-      use deconvolution and ReLU.
+* A: Encoder-decoder architecture can obtain context information in large regions. So by down-sampling achieved by convolutional layer of which stride=2, the net can
+     have a perspective of the large-scale illumination distribution, and this is how to achieve adaptive adjustment.
+     
+     Then it uses the illumination information in large-scale and then does up-sampling to reconstruct local illumination distribution. Skip connections are used here to deal 
+     with the problem that when doing up-sampling, it has to find good information to fill in blank pixels. By skip connections, we can reuse the features in the original 
+     image, i.e., we construct from a feature map with low resolution and a high dimension and we always use deconvolution implement reconstruction. However, when kernel 
+     size/stride is not equal to an integer, checkerboard artifacts (image will be like grids) occur. So we need to resize by Nearest Neighbour Interpolation at first, then 
+     use deconvolution and ReLU.
 
 ### Q8. The author said the network is light-weighted, why?
 * A: They empirically find it already enough for their purpose.
