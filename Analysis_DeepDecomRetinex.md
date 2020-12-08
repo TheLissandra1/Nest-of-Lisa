@@ -497,15 +497,14 @@ It consists of 3 down-sampling blocks and 3 up-sampling ones.
 
 #### Q1. Why the channel number of the input Conv layer in DecomNet is 4?
     * A: 3 RGB channels represent Reflectance and 1 illumination channel, this illumination channel is calculated from max values in RGB channel
-也就是在多层卷积网络中：下一层的filter的channel数= 上一层的featuremap数（kernel数量），如果不相等就没办法继续做卷积了。我们知道随着网络的加深，filter卷积核（是三维的：长、宽、深channel，不算batch）将会越来越深，或者说这个卷积核越来越细长，观察下图，也就直观上能够理解，为什么越深网络基本上卷积核数量会设置的越大，因为这么细长的卷积核做一次卷积才生成一个很小的featuremap ，是无法提取出足够的特征的
-极端情况下，输入输出通道数相同，比如为24，group大小也为24，那么每个输出卷积核，只与输入的对应的通道进行卷积
 
 #### Q2. Why using 64 channel in layers?
     * A:  64 is an empirical value. Trial-and-error process results in 64.
 
 #### Q2.1 Why padding mode here is 'replicate'  and padding = 1 in DecomNet?
     * A: During the Convolutional filter, in edges it cannot be divided as integer so we use padding to preserve a spatial resolution.
-    In image enhancement/image reconstruction field, zero padding may result in pseudo shadows at edges. There are also some other padding ways: random padding, mirror padding and replicate padding. Replicate padding copies edge pixels to fill in, thus new pixels are similar to edges and minimize the influences to results.
+    In image enhancement/image reconstruction field, zero padding may result in pseudo shadows at edges. There are also some other padding ways: random padding, mirror padding
+    and replicate padding. Replicate padding copies edge pixels to fill in, thus new pixels are similar to edges and minimize the influences to results.
 
 #### Q2.2 Why kernel size is 3 in DecomNet and RelightNet?
     * A: Generally the size is 3, because small kernel size leads to smaller computational complexity.
@@ -530,26 +529,38 @@ It consists of 3 down-sampling blocks and 3 up-sampling ones.
     Loss of invariable reflectance = the 
 
 #### #### Q7. What is the structure-aware total variation loss in obtaining the illumination map? How does the loss work? 
-    * A: The author propose a structure-aware total variation constraint for deep image decomposition. By mitigating the effect of total variation at the places where gradients are strong, the constraint successfully smooths the illumination map and retains the main structures.
+    * A: The author propose a structure-aware total variation constraint for deep image decomposition. By mitigating the effect of total variation at the places where gradients
+    are strong, the constraint successfully smooths the illumination map and retains the main structures.
 
 #### Q7.1 Why the loss function is adaptive? How does it achieve to be adaptive to illumination?
-    * A:     Encoder-decoder architecture can obtain context information in large regions. So by down-sampling achieved by convolutional layer of which stride=2, the net can have a perspective of the large-scale illumination distribution, and this is how to achieve adaptive adjustment.
-        Then it uses the illumination information in large-scale and then does up-sampling to reconstruct local illumination distribution. Skip connections are used here to deal with the problem that when doing up-sampling, it has to find good information to fill in blank pixels. By skip connections, we can reuse the features in the original image, i.e., we construct from a feature map with low resolution and a high dimension and we always use deconvolution implement reconstruction. However, when kernel size/stride is not equal to an integer, checkerboard artifacts (image will be like grids) occur. So we need to resize by Nearest Neighbour Interpolation at first, then use deconvolution and ReLU.
+    * A:  Encoder-decoder architecture can obtain context information in large regions. So by down-sampling achieved by convolutional layer of which stride=2, the net can
+        have a perspective of the large-scale illumination distribution, and this is how to achieve adaptive adjustment.
+        Then it uses the illumination information in large-scale and then does up-sampling to reconstruct local illumination distribution. Skip connections are used here to deal 
+        with the problem that when doing up-sampling, it has to find good information to fill in blank pixels. By skip connections, we can reuse the features in the original 
+        image, i.e., we construct from a feature map with low resolution and a high dimension and we always use deconvolution implement reconstruction. However, when kernel 
+        size/stride is not equal to an integer, checkerboard artifacts (image will be like grids) occur. So we need to resize by Nearest Neighbour Interpolation at first, then 
+        use deconvolution and ReLU.
 
 #### Q8. The author said the network is light-weighted, why?
     * A: They empirically find it already enough for their purpose.
 
 #### Q9: Why we need data augmentation? Why the data augmentation step includes randomize, rotate, random crop? And in general what data augmentation techniques will we use?
-    * A: Because we need more data from limited size of dataset to make our model more robust in processing images. These are popular ways of data augmentation in image processing. If we simply do some rotations, translations and flips, our net will consider them as different images.
-    There also some other ways of data augmentation but the author did not use them, I think this is because we should not add unrelated data. E.g., in low-light image enhancement field, there is no need to consider the positions of objects in images.
+    * A: Because we need more data from limited size of dataset to make our model more robust in processing images. These are popular ways of data augmentation in image 
+    processing. If we simply do some rotations, translations and flips, our net will consider them as different images.
+    There also some other ways of data augmentation but the author did not use them, I think this is because we should not add unrelated data. E.g., in low-light image 
+    enhancement field, there is no need to consider the positions of objects in images.
    
 
 #### Q10: What are pros and cons of reading and storing image dataset in memory before training?
     * A: 
 
 #### Q11: In RelightNet (EnhanceNet), why use encoder-decoder structure? How does it work? What are its pros and cons?
-    * A: The former part is similar to skip connections in ResNet and it is very similar to a well-known net in medical image processing field--U-Net. U-Net uses typical encoder-decoder architecture, and it uses pooling layer to do down-sampling and uses deconv to do up-sampling, in this way, the spatial information and edge information of original input image would be recovered. Hence, low resolution feature image will be mapped into pixel-level results. 
-    Meanwhile, in order to recover the lost information during down-sampling, U-Net uses Concat layer to fuse feature image in corresonding positions on channels during down-sampling and up-sampling process. Therefore, the decoder can gain more high resolution information in up-sampling thus better reconstruct details in the original image. Skip connection also enables U-net to concatenate features correspondingly.
+    * A: The former part is similar to skip connections in ResNet and it is very similar to a well-known net in medical image processing field--U-Net. 
+    U-Net uses typical encoder-decoder architecture, and it uses pooling layer to do down-sampling and uses deconv to do up-sampling, in this way, the spatial information and 
+    edge information of original input image would be recovered. Hence, low resolution feature image will be mapped into pixel-level results. 
+    Meanwhile, in order to recover the lost information during down-sampling, U-Net uses Concat layer to fuse feature image in corresonding positions on channels during down-
+    sampling and up-sampling process. Therefore, the decoder can gain more high resolution information in up-sampling thus better reconstruct details in the original image. Skip 
+    connection also enables U-net to concatenate features correspondingly.
     For why up-sampling cannot recover spatial info and resolution, this is determined by information theory. 
     Overall, it is an operation of feature re-utilization.
 
@@ -563,7 +574,8 @@ It consists of 3 down-sampling blocks and 3 up-sampling ones.
 #### Q15: Why learning rates are set like this?\learning rate = 0.001, 0.1 and 10
 
 #### Q16: In the paper 2.3 section, what is the 'Multi-Scale' in 'Multi-Scale Illumination Adjustment' mean? And how does the author implement multi-scale?
-    * A: Compared with single-scale, single-scale means that the input of CNN is one single image, while in multi-scale case, the input of CNN consists of multiple images. E.g., you may crop original image to obtain smaller patches and then flip these patches, so that you can obtain multiple images. 
+    * A: Compared with single-scale, single-scale means that the input of CNN is one single image, while in multi-scale case, the input of CNN consists of multiple images. 
+    E.g., you may crop original image to obtain smaller patches and then flip these patches, so that you can obtain multiple images. 
     This is implemented by data augmentation part in code, train() function.
 
 #### Tips:
