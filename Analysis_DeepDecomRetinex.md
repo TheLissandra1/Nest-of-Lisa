@@ -480,7 +480,7 @@ class RetinexNet(nn.Module):
 ```
 * * * 
 # Q & A
-
+>
 #### Data preprocessing:
 1. Collect synthetic image pairs from raw images, they transform images into YCbCr channel and calculate the histogram of Y channel.
 2. The image pairs contains low light and normal light images in the same angle, and all resolutions are the same, 600*400 pixels (width*height), depth is 24, .png format, created by Adobe Light-room.
@@ -501,38 +501,38 @@ It consists of 3 down-sampling blocks and 3 up-sampling ones.
 ### Q2. Why using 64 channel in layers?
 * A:  64 is an empirical value. Trial-and-error process results in 64.
 
-#### Q2.1 Why padding mode here is 'replicate'  and padding = 1 in DecomNet?
+### Q2.1 Why padding mode here is 'replicate'  and padding = 1 in DecomNet?
 * A: During the Convolutional filter, in edges it cannot be divided as integer so we use padding to preserve a spatial resolution.
      In image enhancement/image reconstruction field, zero padding may result in pseudo shadows at edges. There are also some other padding ways: random padding, mirror padding
      and replicate padding. Replicate padding copies edge pixels to fill in, thus new pixels are similar to edges and minimize the influences to results.
 
-#### Q2.2 Why kernel size is 3 in DecomNet and RelightNet?
+### Q2.2 Why kernel size is 3 in DecomNet and RelightNet?
 * A: Generally the size is 3, because small kernel size leads to smaller computational complexity.
 
-#### Q2.3 Why stride = 1 in DecomNet?
+### Q2.3 Why stride = 1 in DecomNet?
 * A: If no need of up/down sampling, stride = 1.
 
-#### Q3. 
+### Q3. 
 * A: 
 
-#### Q4. Why use Conv+ReLU 5 times in hidden layers?
+### Q4. Why use Conv+ReLU 5 times in hidden layers?
 * A: ReLU is just a commonly used activation function in CNN model. It is also a very empirical way. Activation map results are used to collect information.
 
-#### Q5. Why finally we use Sigmoid function in DecomNet?
+### Q5. Why finally we use Sigmoid function in DecomNet?
 * A: To make the output probabilities between [0,1]
 
-#### Q5.1 What is the datatype of output of DecomNet, R and L(Low light illumination)?
+### Q5.1 What is the datatype of output of DecomNet, R and L(Low light illumination)?
 * A: R is the output image contains 3 channel, and L is the output image contains 1 channel. They will be transported as inputs to RelightNet (EnhanceNet) in the next step.
 
-#### Q6. How the loss function is designed?
+### Q6. How the loss function is designed?
 * A: Loss = Loss of reconstruction + loss of invariable reflectance + loss of illumination smoothness.
      Loss of invariable reflectance = the 
 
-#### #### Q7. What is the structure-aware total variation loss in obtaining the illumination map? How does the loss work? 
+### Q7. What is the structure-aware total variation loss in obtaining the illumination map? How does the loss work? 
 * A: The author propose a structure-aware total variation constraint for deep image decomposition. By mitigating the effect of total variation at the places where gradients
      are strong, the constraint successfully smooths the illumination map and retains the main structures.
 
-#### Q7.1 Why the loss function is adaptive? How does it achieve to be adaptive to illumination?
+### Q7.1 Why the loss function is adaptive? How does it achieve to be adaptive to illumination?
 * A:  Encoder-decoder architecture can obtain context information in large regions. So by down-sampling achieved by convolutional layer of which stride=2, the net can
       have a perspective of the large-scale illumination distribution, and this is how to achieve adaptive adjustment.
       
@@ -542,10 +542,10 @@ It consists of 3 down-sampling blocks and 3 up-sampling ones.
       size/stride is not equal to an integer, checkerboard artifacts (image will be like grids) occur. So we need to resize by Nearest Neighbour Interpolation at first, then 
       use deconvolution and ReLU.
 
-#### Q8. The author said the network is light-weighted, why?
+### Q8. The author said the network is light-weighted, why?
 * A: They empirically find it already enough for their purpose.
 
-#### Q9: Why we need data augmentation? Why the data augmentation step includes randomize, rotate, random crop? And in general what data augmentation techniques will we use?
+### Q9: Why we need data augmentation? Why the data augmentation step includes randomize, rotate, random crop? And in general what data augmentation techniques will we use?
 * A: Because we need more data from limited size of dataset to make our model more robust in processing images. These are popular ways of data augmentation in image 
      processing. If we simply do some rotations, translations and flips, our net will consider them as different images.
     
@@ -553,10 +553,10 @@ It consists of 3 down-sampling blocks and 3 up-sampling ones.
      enhancement field, there is no need to consider the positions of objects in images.
    
 
-#### Q10: What are pros and cons of reading and storing image dataset in memory before training?
+### Q10: What are pros and cons of reading and storing image dataset in memory before training?
 * A: 
 
-#### Q11: In RelightNet (EnhanceNet), why use encoder-decoder structure? How does it work? What are its pros and cons?
+### Q11: In RelightNet (EnhanceNet), why use encoder-decoder structure? How does it work? What are its pros and cons?
 * A: The former part is similar to skip connections in ResNet and it is very similar to a well-known net in medical image processing field--U-Net. 
      U-Net uses typical encoder-decoder architecture, and it uses pooling layer to do down-sampling and uses deconv to do up-sampling, in this way, the spatial information and 
      edge information of original input image would be recovered. Hence, low resolution feature image will be mapped into pixel-level results. 
@@ -566,16 +566,16 @@ It consists of 3 down-sampling blocks and 3 up-sampling ones.
      theory. 
      Overall, it is an operation of feature re-utilization.
 
-#### Q12: In RetinexNet, how does the author connect DecomNet and RelightNet together and how does he reconstruct the image finally?
+### Q12: In RetinexNet, how does the author connect DecomNet and RelightNet together and how does he reconstruct the image finally?
 
-#### Q13: How does the author preprocess data before RetinexNet?
+### Q13: How does the author preprocess data before RetinexNet?
 * A:     Data augmentation and 
 
-#### Q14: Use of Argparse package, any pros/cons?
+### Q14: Use of Argparse package, any pros/cons?
 
-#### Q15: Why learning rates are set like this?\learning rate = 0.001, 0.1 and 10
+### Q15: Why learning rates are set like this?\learning rate = 0.001, 0.1 and 10
 
-#### Q16: In the paper 2.3 section, what is the 'Multi-Scale' in 'Multi-Scale Illumination Adjustment' mean? And how does the author implement multi-scale?
+### Q16: In the paper 2.3 section, what is the 'Multi-Scale' in 'Multi-Scale Illumination Adjustment' mean? And how does the author implement multi-scale?
 * A: Compared with single-scale, single-scale means that the input of CNN is one single image, while in multi-scale case, the input of CNN consists of multiple images. 
 
      E.g., you may crop original image to obtain smaller patches and then flip these patches, so that you can obtain multiple images. This is implemented by data augmentation 
