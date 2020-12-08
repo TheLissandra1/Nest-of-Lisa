@@ -496,18 +496,18 @@ It consists of 3 down-sampling blocks and 3 up-sampling ones.
 
 
 #### Q1. Why the channel number of the input Conv layer in DecomNet is 4?
-    * A: 3 RGB channels represent Reflectance and 1 illumination channel, this illumination channel is calculated from max values in RGB channel
+* A: 3 RGB channels represent Reflectance and 1 illumination channel, this illumination channel is calculated from max values in RGB channel
 
 #### Q2. Why using 64 channel in layers?
-    * A:  64 is an empirical value. Trial-and-error process results in 64.
+* A:  64 is an empirical value. Trial-and-error process results in 64.
 
 #### Q2.1 Why padding mode here is 'replicate'  and padding = 1 in DecomNet?
-    * A: During the Convolutional filter, in edges it cannot be divided as integer so we use padding to preserve a spatial resolution.
-    In image enhancement/image reconstruction field, zero padding may result in pseudo shadows at edges. There are also some other padding ways: random padding, mirror padding
-    and replicate padding. Replicate padding copies edge pixels to fill in, thus new pixels are similar to edges and minimize the influences to results.
+* A: During the Convolutional filter, in edges it cannot be divided as integer so we use padding to preserve a spatial resolution.
+     In image enhancement/image reconstruction field, zero padding may result in pseudo shadows at edges. There are also some other padding ways: random padding, mirror padding
+     and replicate padding. Replicate padding copies edge pixels to fill in, thus new pixels are similar to edges and minimize the influences to results.
 
 #### Q2.2 Why kernel size is 3 in DecomNet and RelightNet?
-    * A: Generally the size is 3, because small kernel size leads to smaller computational complexity.
+* A: Generally the size is 3, because small kernel size leads to smaller computational complexity.
 
 #### Q2.3 Why stride = 1 in DecomNet?
     * A: If no need of up/down sampling, stride = 1.
