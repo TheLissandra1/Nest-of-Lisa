@@ -40,24 +40,21 @@ class DecomNet(nn.Module):
         super(DecomNet, self).__init__()
         # Shallow feature extraction
         # class torch.nn.Conv2d(in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=1, groups=1, bias=True)
-        # input image channel number == 4, output channels produced by the convolution, convolving kernel size = 3
-        # zero-padding added to both sides of the input == 4, padding_mode = 'replicate'
-
-        self.net1_conv0 = nn.Conv2d(4, channel, kernel_size * 3, padding=4, padding_mode='replicate')
-        # Activated layers!
-        #
-        self.net1_convs = nn.Sequential(nn.Conv2d(channel, channel, kernel_size, padding=1, padding_mode='replicate'),
+        self.net1_conv0 = nn.Conv2d(4, channel, kernel_size * 3, padding=4, padding_mode='replicate') #  4-->64
+        # Activated layers
+        ## kernel size = 3*3 is a common size, the smaller the kernel size is, the smaller the computational complexity is
+        self.net1_convs = nn.Sequential(nn.Conv2d(channel, channel, kernel_size, padding=1, padding_mode='replicate'), # 64-->64
                                         nn.ReLU(),
-                                        nn.Conv2d(channel, channel, kernel_size, padding=1, padding_mode='replicate'),
+                                        nn.Conv2d(channel, channel, kernel_size, padding=1, padding_mode='replicate'), # 64-->64
                                         nn.ReLU(),
-                                        nn.Conv2d(channel, channel, kernel_size, padding=1, padding_mode='replicate'),
+                                        nn.Conv2d(channel, channel, kernel_size, padding=1, padding_mode='replicate'), # 64-->64
                                         nn.ReLU(),
-                                        nn.Conv2d(channel, channel, kernel_size, padding=1, padding_mode='replicate'),
+                                        nn.Conv2d(channel, channel, kernel_size, padding=1, padding_mode='replicate'), # 64-->64
                                         nn.ReLU(),
-                                        nn.Conv2d(channel, channel, kernel_size, padding=1, padding_mode='replicate'),
+                                        nn.Conv2d(channel, channel, kernel_size, padding=1, padding_mode='replicate'), # 64-->64
                                         nn.ReLU())
         # Final recon layer
-        self.net1_recon = nn.Conv2d(channel, 4, kernel_size, padding=1, padding_mode='replicate')
+        self.net1_recon = nn.Conv2d(channel, 4, kernel_size, padding=1, padding_mode='replicate') # 64-->4
 
 ```
 * * * 
@@ -65,17 +62,19 @@ class DecomNet(nn.Module):
 * 
 ```python
     def forward(self, input_im):
-        input_max= torch.max(input_im, dim=1, keepdim=True)[0]
-        input_img= torch.cat((input_max, input_im), dim=1)
-        feats0   = self.net1_conv0(input_img)
-        featss   = self.net1_convs(feats0)
-        outs     = self.net1_recon(featss)
-        R        = torch.sigmoid(outs[:, 0:3, :, :])
-        L        = torch.sigmoid(outs[:, 3:4, :, :])
-        return R, L
+        input_max= torch.max(input_im, dim=1, keepdim=True)[0] # the max value in the column direction of the input image
+        # select the max values (illumination) among RGB 3 channels and concatenate them to 4 channels
+        # in order to match the input channels in the 1st conv layer and the last convolutional layer 'recon_layer'
+        input_img= torch.cat((input_max, input_im), dim=1) # concatenate input max and input image in column direction
+        feats0   = self.net1_conv0(input_img) # We choose max illumination because of the Retinex theory
+        featss   = self.net1_convs(feats0) ## output_size =  (input_size-filter_size+2*padding)/Stride+1
+        outs     = self.net1_recon(featss) # 4 channel
+        R        = torch.sigmoid(outs[:, 0:3, :, :]) # put img R into [0,1]  3 channel Reflectance
+        L        = torch.sigmoid(outs[:, 3:4, :, :]) # put img I into [0,1]  1 channel Illumination
+        return R, L # Return R (reflectance) and L(illumination)
 ```
 * * *
-### Loss Functions
+### Loss Functions in DecomNet
 * **1. The loss *L* consists of 3 terms: reconstruction loss *Lrecon*, invariable reflectance loss *Lir*, and illumination smoothness loss *Lis*:**
     > * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/loss.png" width='80%'>
     > * where *lir* and *lis* denote the coefficients to balance the consistency of reflectance and the smoothness of illumination.
@@ -97,6 +96,7 @@ class DecomNet(nn.Module):
   
         ```
 * **1.2 Invariable reflectance loss *Lir* is introduced to constrain the consistency of reflectance:**
+    > * This is a loss function in DecomNet.
     > * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/LossInvariableReflectance.png" width="70%">
     > * **My comments: The author mentioned that low light and normal images should share the same reflectance in any conditions because reflectance is the intrinsic property of objects. However, there might be color differences between normal and low light conditions. And that's why we need to minimize this constraint *Lir* to ensure image pairs have same Reflectance before the next step--Enhance-Net.**
     > * ```python
@@ -105,6 +105,7 @@ class DecomNet(nn.Module):
   
 
 * **1.3 The *Lis* is defined as:**
+    > * This is a loss function in DecomNet.
     > * Total variation minimization (TV), which minimizes the gradient of the whole image, is often used as smoothness prior for various image restoration tasks. However, directly using TV as loss function fails at regions where the image has strong structures or where lightness changes drastically. It is due to the uniform reduction for gradient of illumination map regardless of whether the region is of textual details or strong boundaries. In other words, TV loss is structure-blindness. The illumination is blurred and strong black edges are left on reflectance, as illustrated below.
     > * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/TV.png" width="90%">
     > * To make the loss aware of the image structure, the original TV function is weighted with the gradient of reflectance map. The final Lis is formulated as:
@@ -144,6 +145,14 @@ class DecomNet(nn.Module):
 * The Enhance-Net takes an overall framework of encoder-decoder. A multi-scale concatenation is used to maintain the global consistency of illumination with context information in large regions while tuning the local distributions with focused attention.
 * By mitigating the effect of total variation at the places where gradients are strong, the constraint successfully smooths the illumination map and retains the main structures.
 * * * 
+#### Loss function in RelightNet (EnhanceNet)
+* The loss function *L* for Enhance-Net consists of the reconstruction loss *Lrecon* and the llumination smoothness loss *Lis*. *Lrecon* means to produce a normal-light *Sˆ*, 
+which is,
+* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/Lrecon_Multi-Scale%20Illumination%20Adjustment.png" width="80%">
+* *Rlow* element-wise multiply the adjusted *I^* equals to the reconstructed image *Srecon*, and by minimize the difference between reconstructed image (it could be seen as a predicted image) and Normal light image *S*, thus we minimize the loss and get better performances.
+* *Lis* is the same as <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/LossIlluminationSmoothness.png" width="80%"> , 
+except that *Iˆ* is weighted by gradient map of *Rlow*
+
 #### Enhance-Net (RelightNet) Code Interpretation
 ####    1. ConV + DeConV + fusion
 *  
@@ -153,44 +162,51 @@ class RelightNet(nn.Module):
         super(RelightNet, self).__init__()
 
         self.relu         = nn.ReLU()
-        self.net2_conv0_1 = nn.Conv2d(4, channel, kernel_size, padding=1, padding_mode='replicate') 
-        self.net2_conv1_1 = nn.Conv2d(channel, channel, kernel_size, stride=2, padding=1, padding_mode='replicate')                                      
-        self.net2_conv1_2 = nn.Conv2d(channel, channel, kernel_size, stride=2, padding=1, padding_mode='replicate')                                     
-        self.net2_conv1_3 = nn.Conv2d(channel, channel, kernel_size, stride=2, padding=1, padding_mode='replicate')                                      
-        self.net2_deconv1_1= nn.Conv2d(channel*2, channel, kernel_size, padding=1, padding_mode='replicate')                                       
-        self.net2_deconv1_2= nn.Conv2d(channel*2, channel, kernel_size, padding=1, padding_mode='replicate')                                       
-        self.net2_deconv1_3= nn.Conv2d(channel*2, channel, kernel_size, padding=1, padding_mode='replicate')                                 
-        self.net2_fusion = nn.Conv2d(channel*3, channel, kernel_size=1, padding=1, padding_mode='replicate')                                   
-        self.net2_output = nn.Conv2d(channel, 1, kernel_size=3, padding=0)
+        self.net2_conv0_1 = nn.Conv2d(4, channel, kernel_size, padding=1, padding_mode='replicate') # 4-->64 kernel channels
+        self.net2_conv1_1 = nn.Conv2d(channel, channel, kernel_size, stride=2, padding=1, padding_mode='replicate') # 64
+        self.net2_conv1_2 = nn.Conv2d(channel, channel, kernel_size, stride=2, padding=1, padding_mode='replicate') # 64
+        self.net2_conv1_3 = nn.Conv2d(channel, channel, kernel_size, stride=2, padding=1, padding_mode='replicate') # 64
+        self.net2_deconv1_1= nn.Conv2d(channel*2, channel, kernel_size, padding=1, padding_mode='replicate') # 128
+        self.net2_deconv1_2= nn.Conv2d(channel*2, channel, kernel_size, padding=1, padding_mode='replicate') # 256
+        self.net2_deconv1_3= nn.Conv2d(channel*2, channel, kernel_size, padding=1, padding_mode='replicate') # 512
+        self.net2_fusion = nn.Conv2d(channel*3, channel, kernel_size=1, padding=1, padding_mode='replicate') # fuse 512*3=1536  use 1x1 conv to simply increase channel from 512 
+        to 1536
+        self.net2_output = nn.Conv2d(channel, 1, kernel_size=3, padding=0) # 1536-->1 use 3x3 kernel to reconstruct illumination map I'
+
 ```
 * * * 
 ####    2. Forward in RelightNet
 *
 ```python
     def forward(self, input_L, input_R):
-        input_img = torch.cat((input_R, input_L), dim=1)
-        out0      = self.net2_conv0_1(input_img)
-        out1      = self.relu(self.net2_conv1_1(out0))
-        out2      = self.relu(self.net2_conv1_2(out1))
-        out3      = self.relu(self.net2_conv1_3(out2))
+        input_img = torch.cat((input_R, input_L), dim=1) # concatenate R and L in dimension 1 (column direction) to enable 4 channels as input
+        # convolution to implement down-sampling
+        out0      = self.net2_conv0_1(input_img) # size: 96-->96
+        # Why ReLU? 1. Reduce computational complexity; 2. Faster; 3. Sparse the network; 4. No Saturation.
+        out1      = self.relu(self.net2_conv1_1(out0)) # 96-->48
+        out2      = self.relu(self.net2_conv1_2(out1)) # 48-->24
+        out3      = self.relu(self.net2_conv1_3(out2)) # 24-->12
+        # Nearest Neighbour Interpolation to resize, thus avoid checkerboard artifacts
+        out3_up   = F.interpolate(out3, size=(out2.size()[2], out2.size()[3]))  # resize the out3 to the given size: column 3 and 4 of out2: 12-->24
+        # interpolate to implement up-sampling
+        deconv1   = self.relu(self.net2_deconv1_1(torch.cat((out3_up, out2), dim=1))) # ReLU does not change image size, devonv1_1: 24+24-->48
+        deconv1_up= F.interpolate(deconv1, size=(out1.size()[2], out1.size()[3])) # resize 48-->48
+        deconv2   = self.relu(self.net2_deconv1_2(torch.cat((deconv1_up, out1), dim=1))) # 48+48-->96
+        deconv2_up= F.interpolate(deconv2, size=(out0.size()[2], out0.size()[3])) # resize 96-->96
+        deconv3   = self.relu(self.net2_deconv1_3(torch.cat((deconv2_up, out0), dim=1))) # 96+96--192
 
-        out3_up   = F.interpolate(out3, size=(out2.size()[2], out2.size()[3]))
-        deconv1   = self.relu(self.net2_deconv1_1(torch.cat((out3_up, out2), dim=1)))
-        deconv1_up= F.interpolate(deconv1, size=(out1.size()[2], out1.size()[3]))
-        deconv2   = self.relu(self.net2_deconv1_2(torch.cat((deconv1_up, out1), dim=1)))
-        deconv2_up= F.interpolate(deconv2, size=(out0.size()[2], out0.size()[3]))
-        deconv3   = self.relu(self.net2_deconv1_3(torch.cat((deconv2_up, out0), dim=1)))
+        deconv1_rs= F.interpolate(deconv1, size=(input_R.size()[2], input_R.size()[3])) # resize 48-->96
+        deconv2_rs= F.interpolate(deconv2, size=(input_R.size()[2], input_R.size()[3])) # resize 96--96
+        feats_all = torch.cat((deconv1_rs, deconv2_rs, deconv3), dim=1) # 96+96+192-->384???
 
-        deconv1_rs= F.interpolate(deconv1, size=(input_R.size()[2], input_R.size()[3]))
-        deconv2_rs= F.interpolate(deconv2, size=(input_R.size()[2], input_R.size()[3]))
-        feats_all = torch.cat((deconv1_rs, deconv2_rs, deconv3), dim=1)
-        feats_fus = self.net2_fusion(feats_all)
-        output    = self.net2_output(feats_fus)
+        feats_fus = self.net2_fusion(feats_all) # 96-1+2+1=98
+        output    = self.net2_output(feats_fus) # 98-->96
         return output
 
 ```
 ### II.2 Denoise on Reflectance
 * The amplified noise, which often occurs in low-light conditions, is removed from reflectance if needed.
+* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/Denoise.png" width="80%">
 ### III. Reconstruction
 * We combine the adjusted illumination and reflectance by element-wise multiplication at the reconstruction stage.
 ### IV. RetinexNet
@@ -576,10 +592,9 @@ It consists of 3 down-sampling blocks and 3 up-sampling ones.
 ### Q15: Why learning rates are set like this?\learning rate = 0.001, 0.1 and 10
 
 ### Q16: In the paper 2.3 section, what is the 'Multi-Scale' in 'Multi-Scale Illumination Adjustment' mean? And how does the author implement multi-scale?
-* A: Compared with single-scale, single-scale means that the input of CNN is one single image, while in multi-scale case, the input of CNN consists of multiple images. 
-
-     E.g., you may crop original image to obtain smaller patches and then flip these patches, so that you can obtain multiple images. This is implemented by data augmentation 
-     part in code, train() function.
+* A: Multi-Scale here means at first in encoder-decoder architecture, the input image is successively down-sampled to a small scale, at which the network can have a perspective 
+of the large-scale illumination distribution. This brings network the ability of adaptive adjustment. With large-scale illumination information, up-sampling blocks reconstruct 
+local illumination distribution. 
 
 #### Tips:
     * If testing: record time consumption
