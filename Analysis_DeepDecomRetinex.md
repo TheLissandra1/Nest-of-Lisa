@@ -57,7 +57,6 @@ class DecomNet(nn.Module):
         self.net1_recon = nn.Conv2d(channel, 4, kernel_size, padding=1, padding_mode='replicate') # 64-->4
 
 ```
-* * * 
 ####    2. Forward in DecomNet
 * 
 ```python
@@ -207,12 +206,7 @@ which is,
 except that *Iˆ* is weighted by gradient map of *Rlow*
 * ```python
 # Loss functions (defined in RetinexNet in code)
-
-
-
 ```
-  
-
 #### Enhance-Net (RelightNet) Code Interpretation
 ####    1. ConV + DeConV + fusion
 *  
