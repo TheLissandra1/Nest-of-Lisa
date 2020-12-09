@@ -27,7 +27,7 @@ lightness on objects. On low-light images, it usually suffers from darkness and 
 * With the constraints that the low/normal-light images share the same reflectance and the smoothness of illumination, Decom-Net learns to extract the consistent *R* between variously illuminated images in a data-driven way.
 * During training, there is no need to provide the ground truth (means Correct Label) of the reflectance and illumination. Only requisite knowledge including the consistency of reflectance and the smoothness of illumination map is embedded into the network as loss functions. 
 * Thus, the decomposition of our network is automatically learned from paired low/normal-light images, and by nature suitable for depicting the light variation among the images under different light conditions.
-#### Decom-Net Code Interpretation
+#### Decom-Net Interpretation
 1. Decom-Net takes the low-light image *Slow* and the normal-light one *Snormal* as input, then estimates the reflectance *Rlow* and the illumination *Ilow* for *Slow*, as well as *Rnormal* and *Inormal* for *Snormal*, respectively. 
 2. It first uses a 3 × 3 convolutional layer to extract features from the input image.
 3. Then, several 3×3 convolutional layers with Rectified Linear Unit (ReLU) as the activation function are followed to map the RGB image into reflectance and illumination. A 3×3 convolutional layer projects *R* and *I* from feature space, and sigmoid function is used to constrain both *R* and *I* in the range of [0, 1].
@@ -66,9 +66,9 @@ class DecomNet(nn.Module):
         # select the max values (illumination) among RGB 3 channels and concatenate them to 4 channels
         # in order to match the input channels in the 1st conv layer and the last convolutional layer 'recon_layer'
         input_img= torch.cat((input_max, input_im), dim=1) # concatenate input max and input image in column direction
-        feats0   = self.net1_conv0(input_img) # We choose max illumination because of the Retinex theory
-        featss   = self.net1_convs(feats0) ## output_size =  (input_size-filter_size+2*padding)/Stride+1
-        outs     = self.net1_recon(featss) # 4 channel
+        feats0   = self.net1_conv0(input_img) # 96--96 64 channel
+        featss   = self.net1_convs(feats0) # 96--96 64 channel # output_size =  (input_size-filter_size+2*padding)/Stride+1
+        outs     = self.net1_recon(featss) # 96--96 4 channel
         R        = torch.sigmoid(outs[:, 0:3, :, :]) # put img R into [0,1]  3 channel Reflectance
         L        = torch.sigmoid(outs[:, 3:4, :, :]) # put img I into [0,1]  1 channel Illumination
         return R, L # Return R (reflectance) and L(illumination)
@@ -113,7 +113,59 @@ class DecomNet(nn.Module):
     > * where *∇* denotes the gradient including *∇h (horizontal)* and *∇v (vertical)*, and *lg* denotes the coefficient balancing the strength of structure-awareness. With the weight *exp(−lg∇Ri)*, *Lis* loosens the constraint for smoothness where the gradient of reflectance is steep, in other words, where image structures locate and where the illumination should be discontinuous. Subscripts in *i = low, normal* means this *lis* calculation formula works on both low and normal light images.
     > * Our structure-aware smoothness loss is weighted by reflectance.
     > * ```python
-  # paste some code here
+  # Loss functions (defined in RetinexNet in code)
+      def forward(self, input_low, input_high):
+        # Forward DecompNet
+        input_low = Variable(torch.FloatTensor(torch.from_numpy(input_low))).cuda() # tranform input image from np.array to tensor datatype
+        input_high= Variable(torch.FloatTensor(torch.from_numpy(input_high))).cuda()
+        R_low, I_low   = self.DecomNet(input_low) # obtain low Reflectance and low Illumination
+        R_high, I_high = self.DecomNet(input_high) # obtain normal Reflectance and normal Illumination
+
+        # Forward RelightNet
+        I_delta = self.RelightNet(I_low, R_low) # obtain adjusted Illumination
+
+        # Other variables
+        I_low_3  = torch.cat((I_low, I_low, I_low), dim=1) # build 3 channel Ilow, wherer I represents illumination
+        I_high_3 = torch.cat((I_high, I_high, I_high), dim=1) # build 3 channel Inormal
+        I_delta_3= torch.cat((I_delta, I_delta, I_delta), dim=1) # build 3 channel Iadjusted
+        # herr we create 3 channel variables to enable compute L1 norm with input 3 channel image in the next step
+        
+        # Compute losses
+        # Define Lrecon in DecomNet
+        self.recon_loss_low  = F.l1_loss(R_low * I_low_3,  input_low) # L1 norm (mean element-wise absolute value difference) between Rlow x Ilow3 and input low
+        self.recon_loss_high = F.l1_loss(R_high * I_high_3, input_high) 
+        self.recon_loss_mutal_low  = F.l1_loss(R_high * I_low_3, input_low) 
+        self.recon_loss_mutal_high = F.l1_loss(R_low * I_high_3, input_high) 
+        
+        self.equal_R_loss = F.l1_loss(R_low,  R_high.detach()) # Define Lir = L1 norm of (Rlow - Rnormal), Lir: invariable reflectance loss
+        self.relight_loss = F.l1_loss(R_low * I_delta_3, input_high) # Define Lrecon = L1 norm of (Rlow*I^-Snormal), Lrecon: thr reconstruction loss in RelightNet (EnhanceNet)
+        
+        # Define Lis in DecomNet and RelightNet (EnhanceNet), Lis: illumination smoothness loss, smooth() is defined by author
+        self.Ismooth_loss_low   = self.smooth(I_low, R_low) # Lis in DecomNet
+        self.Ismooth_loss_high  = self.smooth(I_high, R_high)
+        self.Ismooth_loss_delta = self.smooth(I_delta, R_low) # Lis in RelightNet
+        
+        # Loss of DecomNet = Lrecon + λir*Lir +  λis*Lis
+        # λir = 0.001, λis = 0.1, λg = 10
+        # when i ≠ j, λij = 0.001; when i = j, λij = 1
+        self.loss_Decom = 1 * self.recon_loss_low + \
+                          1 * self.recon_loss_high + \
+                          0.001 * self.recon_loss_mutal_low + \ 
+                          0.001 * self.recon_loss_mutal_high + \
+                          0.1 * self.Ismooth_loss_low + \
+                          0.1 * self.Ismooth_loss_high + \
+                          0.01 * self.equal_R_loss
+                          # ? In paper the author states that λir = 0.001 but in code he set λir = 0.01 ?
+        self.loss_Relight = self.relight_loss + \
+                            3 * self.Ismooth_loss_delta
+
+        self.output_R_low   = R_low.detach().cpu() # Reflectance map of low light image, output of DecomNet
+        self.output_I_low   = I_low_3.detach().cpu() # Illumination map of low light image, output of DecomNet
+        self.output_I_delta = I_delta_3.detach().cpu() # adjusted illumination Idelta, output of RelightNet (EnhanceNet)
+        self.output_S       = R_low.detach().cpu() * I_delta_3.detach().cpu() # S is the final enhanced low-light image 
+
+  
+      # calculate gradient horizontally (along x) and vertically (along y)
       def gradient(self, input_tensor, direction):
         self.smooth_kernel_x = torch.FloatTensor([[0, 0], [-1, 1]]).view((1, 1, 2, 2)).cuda()
         self.smooth_kernel_y = torch.transpose(self.smooth_kernel_x, 2, 3)
@@ -122,8 +174,7 @@ class DecomNet(nn.Module):
             kernel = self.smooth_kernel_x
         elif direction == "y":
             kernel = self.smooth_kernel_y
-        grad_out = torch.abs(F.conv2d(input_tensor, kernel, stride=1, padding=1))
-                                     
+        grad_out = torch.abs(F.conv2d(input_tensor, kernel, stride=1, padding=1))                                   
         return grad_out
         
       def ave_gradient(self, input_tensor, direction):
@@ -141,8 +192,10 @@ class DecomNet(nn.Module):
 
 ### II.1 Enhance-Net
 #### Background Theory
-* One basic assumption for illumination map is the local consistency and the structure- awareness. In other words, a good solution for illumination map should be smooth in textural details while can still preserve the overall structure boundary.
-* The Enhance-Net takes an overall framework of encoder-decoder. A multi-scale concatenation is used to maintain the global consistency of illumination with context information in large regions while tuning the local distributions with focused attention.
+* One basic assumption for illumination map is the local consistency and the structure- awareness. In other words, a good solution for illumination map should be smooth in 
+textural details while can still preserve the overall structure boundary.
+* The Enhance-Net takes an overall framework of encoder-decoder. A multi-scale concatenation is used to maintain the global consistency of illumination with context information 
+in large regions while tuning the local distributions with focused attention.
 * By mitigating the effect of total variation at the places where gradients are strong, the constraint successfully smooths the illumination map and retains the main structures.
 * * * 
 #### Loss function in RelightNet (EnhanceNet)
@@ -152,6 +205,13 @@ which is,
 * *Rlow* element-wise multiply the adjusted *I^* equals to the reconstructed image *Srecon*, and by minimize the difference between reconstructed image (it could be seen as a predicted image) and Normal light image *S*, thus we minimize the loss and get better performances.
 * *Lis* is the same as <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/LossIlluminationSmoothness.png" width="80%"> , 
 except that *Iˆ* is weighted by gradient map of *Rlow*
+* ```python
+# Loss functions (defined in RetinexNet in code)
+
+
+
+```
+  
 
 #### Enhance-Net (RelightNet) Code Interpretation
 ####    1. ConV + DeConV + fusion
@@ -180,7 +240,7 @@ class RelightNet(nn.Module):
 ```python
     def forward(self, input_L, input_R):
         input_img = torch.cat((input_R, input_L), dim=1) # concatenate R and L in dimension 1 (column direction) to enable 4 channels as input
-        # convolution to implement down-sampling
+        # 3 times convolution to implement down-sampling by setting stride = 2
         out0      = self.net2_conv0_1(input_img) # size: 96-->96
         # Why ReLU? 1. Reduce computational complexity; 2. Faster; 3. Sparse the network; 4. No Saturation.
         out1      = self.relu(self.net2_conv1_1(out0)) # 96-->48
@@ -188,85 +248,26 @@ class RelightNet(nn.Module):
         out3      = self.relu(self.net2_conv1_3(out2)) # 24-->12
         # Nearest Neighbour Interpolation to resize, thus avoid checkerboard artifacts
         out3_up   = F.interpolate(out3, size=(out2.size()[2], out2.size()[3]))  # resize the out3 to the given size: column 3 and 4 of out2: 12-->24
-        # interpolate to implement up-sampling
+        # 3 times interpolation to implement up-sampling
         deconv1   = self.relu(self.net2_deconv1_1(torch.cat((out3_up, out2), dim=1))) # ReLU does not change image size, devonv1_1: 24+24-->48
         deconv1_up= F.interpolate(deconv1, size=(out1.size()[2], out1.size()[3])) # resize 48-->48
         deconv2   = self.relu(self.net2_deconv1_2(torch.cat((deconv1_up, out1), dim=1))) # 48+48-->96
         deconv2_up= F.interpolate(deconv2, size=(out0.size()[2], out0.size()[3])) # resize 96-->96
         deconv3   = self.relu(self.net2_deconv1_3(torch.cat((deconv2_up, out0), dim=1))) # 96+96--192
-
+        
+        # Multi-Scale features fusion to recover the Reflectance compoennt in multi-scale
         deconv1_rs= F.interpolate(deconv1, size=(input_R.size()[2], input_R.size()[3])) # resize 48-->96
         deconv2_rs= F.interpolate(deconv2, size=(input_R.size()[2], input_R.size()[3])) # resize 96--96
         feats_all = torch.cat((deconv1_rs, deconv2_rs, deconv3), dim=1) # 96+96+192-->384???
 
         feats_fus = self.net2_fusion(feats_all) # 96-1+2+1=98
-        output    = self.net2_output(feats_fus) # 98-->96
-        return output
+        output    = self.net2_output(feats_fus) # 98-->96 1 channel
+        return output # return adjusted Illumination component
 
 ```
 ### II.2 Denoise on Reflectance
 * The amplified noise, which often occurs in low-light conditions, is removed from reflectance if needed.
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/Denoise.png" width="80%">
-### III. Reconstruction
-* We combine the adjusted illumination and reflectance by element-wise multiplication at the reconstruction stage.
-### IV. RetinexNet
-* We invoke DecomNet() and RelightNet() here at first.
-* In Forward() definition, the input contains two images, low and normal light images
-*
-```python
-class RetinexNet(nn.Module):
-    def __init__(self):
-        super(RetinexNet, self).__init__()
-
-        self.DecomNet = DecomNet()
-        self.RelightNet = RelightNet()
-
-    def forward(self, input_low, input_high):
-        # Forward DecompNet
-        input_low = Variable(torch.FloatTensor(torch.from_numpy(input_low))).cuda()
-        input_high= Variable(torch.FloatTensor(torch.from_numpy(input_high))).cuda()
-        R_low, I_low   = self.DecomNet(input_low)
-        R_high, I_high = self.DecomNet(input_high)
-
-        # Forward RelightNet
-        I_delta = self.RelightNet(I_low, R_low)
-
-        # Other variables
-        I_low_3  = torch.cat((I_low, I_low, I_low), dim=1)
-        I_high_3 = torch.cat((I_high, I_high, I_high), dim=1)
-        I_delta_3= torch.cat((I_delta, I_delta, I_delta), dim=1)
-
-        # Compute losses
-        self.recon_loss_low  = F.l1_loss(R_low * I_low_3,  input_low)
-        self.recon_loss_high = F.l1_loss(R_high * I_high_3, input_high)
-        self.recon_loss_mutal_low  = F.l1_loss(R_high * I_low_3, input_low)
-        self.recon_loss_mutal_high = F.l1_loss(R_low * I_high_3, input_high)
-        self.equal_R_loss = F.l1_loss(R_low,  R_high.detach())
-        self.relight_loss = F.l1_loss(R_low * I_delta_3, input_high)
-
-        self.Ismooth_loss_low   = self.smooth(I_low, R_low)
-        self.Ismooth_loss_high  = self.smooth(I_high, R_high)
-        self.Ismooth_loss_delta = self.smooth(I_delta, R_low)
-
-        self.loss_Decom = self.recon_loss_low + \
-                          self.recon_loss_high + \
-                          0.001 * self.recon_loss_mutal_low + \
-                          0.001 * self.recon_loss_mutal_high + \
-                          0.1 * self.Ismooth_loss_low + \
-                          0.1 * self.Ismooth_loss_high + \
-                          0.01 * self.equal_R_loss
-        self.loss_Relight = self.relight_loss + \
-                            3 * self.Ismooth_loss_delta
-
-        self.output_R_low   = R_low.detach().cpu()
-        self.output_I_low   = I_low_3.detach().cpu()
-        self.output_I_delta = I_delta_3.detach().cpu()
-        self.output_S       = R_low.detach().cpu() * I_delta_3.detach().cpu()
-```
-
-
-
-
 
 
 ### Training
