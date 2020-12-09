@@ -516,9 +516,6 @@ It consists of 3 down-sampling blocks and 3 up-sampling ones.
 ### Q5.1 What is the datatype of output of DecomNet, R and L(Low light illumination)?
 * A: R is the output image contains 3 channel, and L is the output image contains 1 channel. They will be transported as inputs to RelightNet (EnhanceNet) in the next step.
 
-### Q6. How the loss function is designed?
-* A: Loss = Loss of reconstruction + loss of invariable reflectance + loss of illumination smoothness.
-     Loss of invariable reflectance = the 
 
 ### Q7. What is the structure-aware total variation loss in obtaining the illumination map? How does the loss work? 
 * A: The author propose a structure-aware total variation constraint for deep image decomposition. By mitigating the effect of total variation at the places where gradients
