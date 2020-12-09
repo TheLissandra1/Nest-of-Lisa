@@ -18,9 +18,6 @@ lightness on objects. On low-light images, it usually suffers from darkness and 
 | :----: | :----: | :----: |
 | detail | 600 * 400 pixel (width * height), created by Adobe Light-room, .png format | 600 * 400 pixel (width * height), created by Adobe Light-room, .png format |
 |image pair e.g.| <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/lowlightimg2.png"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/2.png"> |
-* 
-```python
-```
 * * * 
 ### I. Decom-Net 
 * It takes in pairs of low/normal-light images at the training stage, while only low-light images as input at the training at the testing stage.
