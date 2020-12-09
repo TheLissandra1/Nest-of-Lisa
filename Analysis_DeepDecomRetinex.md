@@ -534,9 +534,6 @@ It consists of 3 down-sampling blocks and 3 up-sampling ones.
      size/stride is not equal to an integer, checkerboard artifacts (image will be like grids) occur. So we need to resize by Nearest Neighbour Interpolation at first, then 
      use deconvolution and ReLU.
 
-### Q8. The author said the network is light-weighted, why?
-* A: They empirically find it already enough for their purpose.
-
 ### Q9: Why we need data augmentation? Why the data augmentation step includes randomize, rotate, random crop? And in general what data augmentation techniques will we use?
 * A: Because we need more data from limited size of dataset to make our model more robust in processing images. These are popular ways of data augmentation in image 
      processing. If we simply do some rotations, translations and flips, our net will consider them as different images.
@@ -545,8 +542,6 @@ It consists of 3 down-sampling blocks and 3 up-sampling ones.
      enhancement field, there is no need to consider the positions of objects in images.
    
 
-### Q10: What are pros and cons of reading and storing image dataset in memory before training?
-* A: 
 
 ### Q11: In RelightNet (EnhanceNet), why use encoder-decoder structure? How does it work? What are its pros and cons?
 * A: The former part is similar to skip connections in ResNet and it is very similar to a well-known net in medical image processing field--U-Net. 
@@ -558,14 +553,9 @@ It consists of 3 down-sampling blocks and 3 up-sampling ones.
      theory. 
      Overall, it is an operation of feature re-utilization.
 
-### Q12: In RetinexNet, how does the author connect DecomNet and RelightNet together and how does he reconstruct the image finally?
-
-### Q13: How does the author preprocess data before RetinexNet?
-* A:     Data augmentation and 
-
-### Q14: Use of Argparse package, any pros/cons?
 
 ### Q15: Why learning rates are set like this?\learning rate = 0.001, 0.1 and 10
+ * A: Set them empirically. As we know, if the learning rate is high at the beginning, the model learns fast but easy to explode, so we need to reduce learning rate later on.
 
 ### Q16: In the paper 2.3 section, what is the 'Multi-Scale' in 'Multi-Scale Illumination Adjustment' mean? And how does the author implement multi-scale?
 * A: Multi-Scale here means at first in encoder-decoder architecture, the input image is successively down-sampled to a small scale, at which the network can have a perspective 
