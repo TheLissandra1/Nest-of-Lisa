@@ -25,9 +25,10 @@ lightness on objects. On low-light images, it usually suffers from darkness and 
 * During training, there is no need to provide the ground truth (means Correct Label) of the reflectance and illumination. Only requisite knowledge including the consistency of reflectance and the smoothness of illumination map is embedded into the network as loss functions. 
 * Thus, the decomposition of our network is automatically learned from paired low/normal-light images, and by nature suitable for depicting the light variation among the images under different light conditions.
 #### Decom-Net Interpretation
-1. Decom-Net takes the low-light image *Slow* and the normal-light one *Snormal* as input, then estimates the reflectance *Rlow* and the illumination *Ilow* for *Slow*, as well as *Rnormal* and *Inormal* for *Snormal*, respectively. 
-2. It first uses a 3 × 3 convolutional layer to extract features from the input image.
-3. Then, several 3×3 convolutional layers with Rectified Linear Unit (ReLU) as the activation function are followed to map the RGB image into reflectance and illumination. A 3×3 convolutional layer projects *R* and *I* from feature space, and sigmoid function is used to constrain both *R* and *I* in the range of [0, 1].
+1. Decom-Net takes the low-light image *Slow* and the normal-light one *Snormal* as input, then estimates the reflectance *Rlow* and the illumination *Ilow* for *Slow*, as well 
+as *Rnormal* and *Inormal* for *Snormal*, respectively. 
+2. It uses several 3×3 convolutional layers with Rectified Linear Unit (ReLU) as the activation function are followed to map the RGB image into reflectance and illumination. A 
+3×3 convolutional layer projects *R* and *I* from feature space, and sigmoid function is used to constrain both *R* and *I* in the range of [0, 1].
 * * * 
 ####    1. Conv + ReLU
 * 
