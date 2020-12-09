@@ -74,32 +74,20 @@ class DecomNet(nn.Module):
 ### Loss Functions in DecomNet
 * **1. The loss *L* consists of 3 terms: reconstruction loss *Lrecon*, invariable reflectance loss *Lir*, and illumination smoothness loss *Lis*:**
     > * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/loss.png" width='80%'>
-    > * where *lir* and *lis* denote the coefficients to balance the consistency of reflectance and the smoothness of illumination.
+    > * where *λir* and *λis* denote the coefficients to balance the consistency of reflectance and the smoothness of illumination.
 
 *  **1.1 The *Lrecon* is defined as:**
-    > * This is the regularization which prevent the model from doing too well on training data.
     > * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/lossRecon.png" width='90%'>
-    > * Based on the assumption that both *Rlow* and *Rhigh* can reconstruct the image with the corresponding illumination map, the reconstruction loss *Lrecon* is formulated as above.
-    > * The formula means that *Lrecon* equals to the sum of (coefficients of every pixel muliply the L1 Norm of *Ri* element-wise multiply *Ij* minus *Sj*), where *i* and *j* are low and normal index.
-    > * Subscripts in *i = low, normal* means this *lis* calculation formula works on both low and normal light images.
+    > * The formula means that *Lrecon* equals to the sum of (coefficients muliply the L1 Norm of *Ri* element-wise multiply *Ij* minus *Sj*), where *i* and *j* are low and normal index, where *Ri* * *Ij* is the reconstruct image and *Sj* is the original image. When we minimize the loss function, we minimize the difference between predicted image 
+and real image, thus obtain the best reconstruction performance.
+    > * Subscripts in *i = low, normal* means this *Lrecon* calculation formula works on both low and normal light images.
+    > * In later code, we can see it calculates loss between low and low, normal and normal, and mutual losses between low and normal.
 * **Q: Why we use L1 Norm here?**
     > * **A: To sparse the weights, thus we can complete feature selection and add model interpretability. And if compared with L2 norm, L1 create less features and minimize the            weights much faster than L2; L1 is also Robust to abnormal values.**
-    > * And, if we rethink about *Ri* in *Lrecon* after viewing *Lir*, we know that Reflectance of low and normal images are same due to constraints, so we don't need to care           too much about *Ri* here.
-    > * Therefore, if the input is:
-        1. low light image, then *Lrecon* = ∑∑ λij * || Reflectance o Illumination of low image - low image ||1.
-        2. normal light image, then *Lrecon* = ∑∑ λij * || Reflectance o Illumination of normal image - normal image ||1.
-    > * ```python
-        # paste some code here
-  
-        ```
 * **1.2 Invariable reflectance loss *Lir* is introduced to constrain the consistency of reflectance:**
     > * This is a loss function in DecomNet.
     > * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/LossInvariableReflectance.png" width="70%">
-    > * **My comments: The author mentioned that low light and normal images should share the same reflectance in any conditions because reflectance is the intrinsic property of objects. However, there might be color differences between normal and low light conditions. And that's why we need to minimize this constraint *Lir* to ensure image pairs have same Reflectance before the next step--Enhance-Net.**
-    > * ```python
-       # paste some code here
-       ```
-  
+    > * **My comments: The author mentioned that low light and normal images should share the same reflectance in any conditions because reflectance is the intrinsic property of objects. However, there might be color differences between normal and low light conditions. And that's why we need to minimize this constraint *Lir* to ensure image pairs have same Reflectance before the next step--Enhance-Net. This is the what Retinex theory indicates.**
 
 * **1.3 The *Lis* is defined as:**
     > * This is a loss function in DecomNet.
@@ -107,10 +95,11 @@ class DecomNet(nn.Module):
     > * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/TV.png" width="90%">
     > * To make the loss aware of the image structure, the original TV function is weighted with the gradient of reflectance map. The final Lis is formulated as:
     > * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/LossIlluminationSmoothness.png" width="80%">
-    > * where *∇* denotes the gradient including *∇h (horizontal)* and *∇v (vertical)*, and *lg* denotes the coefficient balancing the strength of structure-awareness. With the weight *exp(−lg∇Ri)*, *Lis* loosens the constraint for smoothness where the gradient of reflectance is steep, in other words, where image structures locate and where the illumination should be discontinuous. Subscripts in *i = low, normal* means this *lis* calculation formula works on both low and normal light images.
+    > * where *∇* denotes the gradient including *∇h (horizontal)* and *∇v (vertical)*, and *lg* denotes the coefficient balancing the strength of structure-awareness. With the weight *exp(−lg∇Ri)*, *Lis* loosens the constraint for smoothness where the gradient of reflectance is steep, in other words, where image structures locate and where the illumination should be discontinuous. Subscripts in *i = low, normal* means this *lis* calculation formula works on both low and normal light images. And by calculating gradients of R in order to allocate weights to I gradients, it enables area in I as smooth as possible where corresponds to smooth area in R.
     > * Our structure-aware smoothness loss is weighted by reflectance.
-    > * ```python
-  # Loss functions (defined in RetinexNet in code)
+    > * Calculations of gradients are implemented both horizontally and vertically, I think this is because we need to consider all directions in the Reflectance, in other words, it is similar to a traversal of an image gradients to detect where structures are obvious.
+  # Loss functions (all defined in RetinexNet in code)
+  ```python
       def forward(self, input_low, input_high):
         # Forward DecompNet
         input_low = Variable(torch.FloatTensor(torch.from_numpy(input_low))).cuda() # tranform input image from np.array to tensor datatype
@@ -199,11 +188,11 @@ in large regions while tuning the local distributions with focused attention.
 * The loss function *L* for Enhance-Net consists of the reconstruction loss *Lrecon* and the llumination smoothness loss *Lis*. *Lrecon* means to produce a normal-light *Sˆ*, 
 which is,
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/Lrecon_Multi-Scale%20Illumination%20Adjustment.png" width="80%">
-* *Rlow* element-wise multiply the adjusted *I^* equals to the reconstructed image *Srecon*, and by minimize the difference between reconstructed image (it could be seen as a predicted image) and Normal light image *S*, thus we minimize the loss and get better performances.
-* *Lis* is the same as <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/LossIlluminationSmoothness.png" width="80%"> , 
+* *Rlow* element-wise multiply the adjusted *I^* equals to the reconstructed image *Srecon*, and by minimizing the difference between reconstructed image (it could be seen as a predicted image) and Normal light image *S*, thus we minimize the loss and get better performances.
+* *Lis* is the same as <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/LossIlluminationSmoothness.png" width="70%"> , 
 except that *Iˆ* is weighted by gradient map of *Rlow*
-* ```python
-# Loss functions (defined in RetinexNet in code)
+* * *
+# EnhanceNet (it is called RelightNet in code)
 ```
 #### Enhance-Net (RelightNet) Code Interpretation
 ####    1. ConV + DeConV + fusion
@@ -221,8 +210,7 @@ class RelightNet(nn.Module):
         self.net2_deconv1_1= nn.Conv2d(channel*2, channel, kernel_size, padding=1, padding_mode='replicate') # 128
         self.net2_deconv1_2= nn.Conv2d(channel*2, channel, kernel_size, padding=1, padding_mode='replicate') # 256
         self.net2_deconv1_3= nn.Conv2d(channel*2, channel, kernel_size, padding=1, padding_mode='replicate') # 512
-        self.net2_fusion = nn.Conv2d(channel*3, channel, kernel_size=1, padding=1, padding_mode='replicate') # fuse 512*3=1536  use 1x1 conv to simply increase channel from 512 
-        to 1536
+        self.net2_fusion = nn.Conv2d(channel*3, channel, kernel_size=1, padding=1, padding_mode='replicate') # fuse 512*3=1536  use 1x1 conv to simply increase channel from 512 to 1536
         self.net2_output = nn.Conv2d(channel, 1, kernel_size=3, padding=0) # 1536-->1 use 3x3 kernel to reconstruct illumination map I'
 
 ```
@@ -260,7 +248,7 @@ class RelightNet(nn.Module):
 ### II.2 Denoise on Reflectance
 * The amplified noise, which often occurs in low-light conditions, is removed from reflectance if needed.
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/Denoise.png" width="80%">
-
+* However, there is no code implementation of Denoising on Reflectance at all, and I view the tensorflow version and there is no code implementation of denoising either. So I think maybe the author believes his model does not need this later on.
 
 ### Training
 * * * 
@@ -281,14 +269,11 @@ class RelightNet(nn.Module):
         numBatch = len(train_low_data_names) // int(batch_size)
 
         # Create the optimizers
-        self.train_op_Decom   = optim.Adam(self.DecomNet.parameters(),
-                                           lr=lr[0], betas=(0.9, 0.999))
+        self.train_op_Decom   = optim.Adam(self.DecomNet.parameters(), # Adam is an optimizer can converge quickly and adaptive in learning rate adjustment.
+                                           lr=lr[0], betas=(0.9, 0.999)) # and Adam is also the most popular optimizer in practice.
         self.train_op_Relight = optim.Adam(self.RelightNet.parameters(),
                                            lr=lr[0], betas=(0.9, 0.999))
-```
-* **Q:↑Why use Adam optimizer here?**
-    * **A: **
-```python
+
         # Initialize a network if its checkpoint is available
         self.train_phase= train_phase
         load_model_status, global_step = self.load(ckpt_dir)
@@ -521,8 +506,6 @@ It consists of 3 down-sampling blocks and 3 up-sampling ones.
 ### Q2.3 Why stride = 1 in DecomNet?
 * A: If no need of up/down sampling, stride = 1.
 
-### Q3. 
-* A: 
 
 ### Q4. Why use Conv+ReLU 5 times in hidden layers?
 * A: ReLU is just a commonly used activation function in CNN model. It is also a very empirical way. Activation map results are used to collect information.
