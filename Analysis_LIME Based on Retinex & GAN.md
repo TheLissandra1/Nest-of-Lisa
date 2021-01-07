@@ -1,4 +1,5 @@
 # Low-light Image Enhancement Algorithm Based on Retinex and Generative Adversarial Network
+* * *
 ## Intro
 #### 1. Zero-DCE is non-reference, i.e. is independent of paired and unpaired training data, thus avoid the risk of overfitting.
    1. Non-reference is achieved by a set of specially designed non-reference loss functions.
@@ -8,3 +9,7 @@
    2. Curves are differentiable so that we can learn adjustable parameters of curves through a CNN.
 #### 3. Zero-DCE supersedes state-of-art performance both qualitatively and quantitatively, e.g. CNN-based method and EnlightenGAN.
 #### 4. Zero-DCE is capable of improving high-level visual tasks, e.g. face detection, and it is lightweight.
+* * * 
+## Related Work
+
+##
