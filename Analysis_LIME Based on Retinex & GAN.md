@@ -14,8 +14,7 @@
 
 ## 3. Methodology
 #### 3.1 Light-Enhancement Curve (LE-Curve)
-   > * Three objectives: 1) each pixel value of the enhanced image should be in the normalized range of [0,1] to avoid information loss induced by overflow truncation;
-2) this curve should be monotonous to preserve the differences (contrast) of neighboring pixels; and 3) the form of this curve should be as simple as possible and  differentiable in the process of gradient backpropagation.
+   > * Three objectives: 1) each pixel value of the enhanced image should be in the normalized range of [0,1] to avoid information loss induced by overflow truncation;2) this curve should be monotonous to preserve the differences (contrast) of neighboring pixels; and 3) the form of this curve should be as simple as possible and  differentiable in the process of gradient backpropagation.
 
 
 ## 4. Experiments
