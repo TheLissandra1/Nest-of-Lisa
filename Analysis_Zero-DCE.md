@@ -85,15 +85,15 @@ class enhance_net_nopool(nn.Module):  #创建增强网络结构
 
 ### 3.3 Non-Reference Loss Functions 💜 
 ##### Spatial Consistency Loss
-* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/Spatial_Consistency_Loss.png" width="50%">
+* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/Spatial_Consistency_Loss.png" width="35%">
 ##### Exposure Control Loss
-* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/Exposure_Control_Loss.png" width="50%">
+* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/Exposure_Control_Loss.png" width="21%">
 ##### Color Constancy Loss
-* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/Color_Constancy_Loss.png" width="50%">
+* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/Color_Constancy_Loss.png" width="40%">
 ##### Illumination Smoothness Loss
-* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/Illumination_Smoothness_Loss.png" width="50%">
+* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/Illumination_Smoothness_Loss.png" width="40%">
 #### Total Loss
-* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/Total_Loss.png" width="50%">
+* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/Total_Loss.png" width="40%">
 
 ## 4. Experiments
 ### 4.1 Ablation Study
