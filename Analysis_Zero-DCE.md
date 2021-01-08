@@ -25,8 +25,9 @@
    > * Pixel-wise Curve:
    >   <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/Pixel-wise_Curve.png" width="40%">
 ### 3.2 DCE-Net
-
-**Code Interpretation
+* Framework
+* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/DCENet.png" width="50%">
+* Code Interpretation
 ```python
 import torch
 import torch.nn as nn
