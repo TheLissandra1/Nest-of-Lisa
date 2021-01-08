@@ -278,45 +278,42 @@ import cv2
 random.seed(1143)
 
 
-def populate_train_list(lowlight_images_path):
+def populate_train_list(lowlight_images_path): #获取训练列表（微光图像路径）
 
-	image_list_lowlight = glob.glob(lowlight_images_path + "*.jpg")
+	image_list_lowlight = glob.glob(lowlight_images_path + "*.jpg")#提取微光图像
+	train_list = image_list_lowlight #将其作为训练列表
+	random.shuffle(train_list) #将列表的元素顺序打乱
+	return train_list  #返回打乱顺序后的列表
 
-	train_list = image_list_lowlight
+class lowlight_loader(data.Dataset): #创建微光图像类（数据集）
 
-	random.shuffle(train_list)
+	def __init__(self, lowlight_images_path): #初始化
 
-	return train_list
-
-	
-class lowlight_loader(data.Dataset):
-
-	def __init__(self, lowlight_images_path):
-
-		self.train_list = populate_train_list(lowlight_images_path) 
-		self.size = 256
-
-		self.data_list = self.train_list
-		print("Total training examples:", len(self.train_list))
-
-
+		self.train_list = populate_train_list(lowlight_images_path) #将获取的训练列表存入self训练列表
+		self.size = 256  
 		
+		self.data_list = self.train_list  #数据列表
+		print("Total training examples:", len(self.train_list))  #打印训练列表中元素的个数
 
-	def __getitem__(self, index):
+	def __getitem__(self, index):  #实现对象迭代
 
-		data_lowlight_path = self.data_list[index]
+		data_lowlight_path = self.data_list[index] #索引数据列表
 		
-		data_lowlight = Image.open(data_lowlight_path)
+		data_lowlight = Image.open(data_lowlight_path) #读取数据列表文件的位置
 		
 		data_lowlight = data_lowlight.resize((self.size,self.size), Image.ANTIALIAS)
+		#调整图像大小为256*256，第二个参数为Image.ANTIALIAS：高质量
 
-		data_lowlight = (np.asarray(data_lowlight)/255.0) 
-		data_lowlight = torch.from_numpy(data_lowlight).float()
+		data_lowlight = (np.asarray(data_lowlight)/255.0) #把数据列表装换为数组
 
-		return data_lowlight.permute(2,0,1)
+		data_lowlight = torch.from_numpy(data_lowlight).float()#把数组转化内浮点型张量
+
+		return data_lowlight.permute(2,0,1) 
 
 	def __len__(self):
-		return len(self.data_list)
+
+		return len(self.data_list)  #返回数据列表长度
+
 
 
 ```
