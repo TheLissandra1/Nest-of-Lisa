@@ -14,12 +14,12 @@
 
 ## 3. Methodology
 ### 3.0 Framework
-* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/DCENetFramework.png", width=80%>
+* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/DCENetFramework.png", width="80%">
 ### 3.1 Light-Enhancement Curve (LE-Curve) 💜
    > * This self-adaptive curve parameters only depend on the input image.
    > * Three objectives: 1) each pixel value of the enhanced image should be in the normalized range of [0,1] to avoid information loss induced by overflow truncation; 2) this curve should be monotonous to preserve the differences (contrast) of neighboring pixels; 3) the form of this curve should be as simple as possible and  differentiable in the process of gradient backpropagation.
    > * Curve: 
-   >   <img src='https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/LECurve.png', width=80%>
+   >   <img src='https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/LECurve.png', width="80%">
    > *
 ### 3.2 DCE-Net
 
