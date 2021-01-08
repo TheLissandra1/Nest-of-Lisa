@@ -24,9 +24,10 @@
    >   <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/High_Order_Curve.png" width="40%">
    > * Pixel-wise Curve:
    >   <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/Pixel-wise_Curve.png" width="40%">
+   > * An example of the pixel-wise curve parameter maps with average iterations (n=8) and normalized values to the range of [0,1], b, c, d represent the averaged best-fitting curve parameter maps of R, G and B channels, respectively.
 ### 3.2 DCE-Net
 * Framework
-* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/DCENet.png" width="50%">
+* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_LIME_Zero_DCE/DCENet.png" width="70%">
 * Code Interpretation
 ```python
 import torch
