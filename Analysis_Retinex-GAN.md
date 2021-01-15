@@ -11,7 +11,8 @@
   > 5. LIME
   > 6. LLNET etc.
 * B. GAN: The generative network is trained for generating realistic synthetic samples from a noise distribution to cheat the discriminative network. The discriminative network aims to distinguish true and generated fake samples. In addition to random sample from a noise distribution, various form data can also be used as input to the generator.
-
+  > <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_Retinex-GAN/GAN.png" width = "60%">
+  > <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_Retinex-GAN/GAN_objective function.png" width = "60%">
 ## 3. Proposed Research
 ### A. Network Structure  💜
    > * Based on Retinex theory.
