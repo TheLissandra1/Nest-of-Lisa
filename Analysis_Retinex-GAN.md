@@ -63,20 +63,20 @@ the area encircled by red line rectangular works.
    > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/enhancement loss.png" width = "30%">
    > * where *y* is the target image, and *Rx·Ix'* is the composite image.
    > * In order to obtain the image details, we use the better SSIMMS loss which are proposed by Zhao et al. "Loss functions for image restoration with neural networks", 2017. The SSIM-MS loss is a multi-scale version of SSIM loss which comes from the Structural SIMilarity index (SSIM). Means and standard deviations are computed with a Gaussian ﬁlter with standard deviation  , . SSIM for pixel p is deﬁned as:
-   > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/SSIM" width = "30%">
+   > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/SSIM.png" width = "30%">
    > * where µi; µj is the average of i; j, σi^2; σj^2 is the variance of i; j,
              σij is the convariance of i and j, 
              c1 = (k1·L)^2; c2 = k2·L^2 are two variables to stabilize the division with weak denominator,
              L is the dynamic range of the pixel-values, 
              k1 = 0:01 and k2 = 0:03 by default. 
              The loss function for SSIM can be then written as:
-   > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/Lssim" width = "30%">
+   > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/Lssim.png" width = "30%">
    > * while SSIM Loss are influenced by the parameters σG, Zhao et al. use the MS_SSIM rather than fine-tuning the σG, Given a dyadic pyramid of M levels, MS_SSIM is defined as:
-   > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/MS_SSIM" width = "30%">
+   > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/MS_SSIM.png" width = "30%">
    > * The multiscale SSIM loss for patch p is defined as:
-   > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/Lssim_ms" width = "30%">
+   > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/Lssim_ms.png" width = "30%">
    > * Combine the Lenh with Lssim_ms and take the strategies by Zhao et al.
-   > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/Lcom" width = "30%">
+   > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/Lcom.png" width = "30%">
    > * where α is set to 0.84.
 
 ## 4. Experimental Results & Discussions
