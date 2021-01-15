@@ -12,7 +12,7 @@
   > 6. LLNET etc.
 * B. GAN: The generative network is trained for generating realistic synthetic samples from a noise distribution to cheat the discriminative network. The discriminative network aims to distinguish true and generated fake samples. In addition to random sample from a noise distribution, various form data can also be used as input to the generator.
   > <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_Retinex-GAN/GAN.png" width = "60%">
-  > <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_Retinex-GAN/GAN_objective function.png" width = "60%">
+  > <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_Retinex-GAN/GAN_Objective function.png" width = "60%">
 ## 3. Proposed Research
 ### A. Network Structure  💜
    > * Based on Retinex theory.
@@ -44,14 +44,15 @@ the area encircled by red line rectangular works.
    > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/Multitask Loss.png" width = "50%">
    > * where λrec, λdec, λcom, and λcCAN are the loss of Pix2pix-GAN which includes the LcGAN loss and the L1 loss while the L1 loss is replaced by smoothL1 loss.
    > * Pix2pix-GAN:
-   > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/Pix2pix.png" width = "30%">
-   > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/Pix2pix_1.png" width = "30%">
+   > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/Pix2pix.png" width = "40%">
+   > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/Pix2pix_1.png" width = "40%">
    ##### cGAN loss
    > * The original cGAN (condition GAN) loss is described as below:
    > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/cGAN.png" width = "30%">
    > * SmoothL1 loss:
    > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/smoothL1.png" width = "30%">
    ##### reconsruction loss
+   > * The reconstruction loss Lrec ensures that the image divide into illumination part and reflected part then can be restored which is defined as:
    > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/reconstruction loss.png" width = "30%">
    > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/Lreconx_y.png" width = "30%">
    ##### decomposition loss
@@ -86,8 +87,9 @@ the area encircled by red line rectangular works.
 
 ### B. LOL Dataset
 ##### Comparison of Decomposition Results
+ 
 ##### Comparison in the Real Scene
-
+   > * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_Retinex-GAN/LOL_Comp_decom.png" width="80%"> 
 ### C. Ablation Study on CSID
 ### D. Discussion
 
