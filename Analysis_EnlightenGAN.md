@@ -5,13 +5,50 @@
 * code link: https://github.com/VITA-Group/EnlightenGAN (official)   others: https://paperswithcode.com/paper/enlightengan-deep-light-enhancement-without#code
 * IEEE Transaction on Image Processing, 2020, [EnlightenGAN: Deep Light Enhancement without Paired Supervision](https://arxiv.org/abs/1906.06972)
 * * * 
+### Representitive Results
+* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Repre_Results.png" width="110%">
 ## Overall Architecture
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/EnlightenGAN.png" width="110%">
-#### Innovations
+
+#### Notable Innovations
 * 1. EnlightenGAN is the first work that successfully introduces unpaired training to low-light image enhancement. Such a training strategy removes the dependency on paired training data and enables us to train with larger varieties of images from different domains.
 It also avoids overfitting any specific data generation protocol or imaging device that previous works implicitly rely on, hence leading to notably improved real-world generalization.
-* 2. EnlightenGAN gains remarkable performance by imposing  a global-local discriminator structure that handles spatially-varying light conditions in the input image; (ii) the idea of self-regularization, implemented by both the self feature preserving loss and the self-regularized attention mechanism. The selfregularization is critical to our model success, because of the unpaired setting where no strong form of external supervision is available.
-* 3. EnlightenGAN is compared with several state-of-theart methods via comprehensive experiments. The results are measured in terms of visual quality, noreferenced image quality assessment, and human subjective survey. All results consistently endorse the superiority of EnlightenGAN. Morever, in contrast to existing paired-trained enhancement approaches, EnlightenGAN proves particularly easy and flexible to be adapted to enhancing real-world low-light images from different domains.
+* 2. EnlightenGAN gains remarkable performance by imposing  a global-local discriminator structure that handles spatially-varying light conditions in the input image; the idea of self-regularization, implemented by both the self feature preserving loss and the self-regularized attention mechanism. The self-regularization is critical to the model success, because of the unpaired setting where no strong form of external supervision is available.
+* 3. EnlightenGAN is compared with several state-of-the-art methods via comprehensive experiments. The results are measured in terms of visual quality, noreferenced image quality assessment, and human subjective survey. All results consistently endorse the superiority of EnlightenGAN. Morever, in contrast to existing paired-trained enhancement approaches, EnlightenGAN proves particularly easy and flexible to be adapted to enhancing real-world low-light images from different domains.
+
+
+## Related Works
+#### Paired Datasets
+* LOL Dataset
+#### Traditional Approaches
+* LIME: 
+#### Deep Learning Approaches
+* LL-Net:
+* HDR-Net:
+#### Adversarial Learning 
+
+
+## Method
+### 3.1 Global-Local Discriminators
+### 3.2 Self Feature Preserving Loss
+### 3.3 U-Net Generator Guided with Self-Regularized Attention
+
+
+## Experiments
+### 4.1 Dataset and Implementation Details
+### 4.2 Ablation Study
+### 4.3 Comparison with State-of-the-Arts
+#### 4.3.1 Visual Quality Comparison
+#### 4.3.2 Human Subjective Evaluation 
+#### 4.3.3 No-Referenced Image Quality Assessment
+### 4.4 Adaptation on Real-World Images
+### 4.5 Pre-Processing for Improving Classification
+
+## Conclusion
+* In this paper, we address the low-light enhancement problem with a novel and flexible unsupervised framework.
+* The proposed EnlightenGAN operates and generalizes well without any paired training data. The experimental results on various low light datasets show that our approach outperforms multiple state-of-the-art approaches under both subjective and objective metrics.
+* Furthermore, we demonstrate that EnlightenGAN can be easily adapted on real noisy lowlight images and yields visually pleasing enhanced images.
+* Our future work will explore how to control and adjust the light enhancement levels based on user inputs in one unified model. Due to the complicacy of light enhancement, we also expect integrate algorithm with sensor innovations.
 
 
 
@@ -20,7 +57,7 @@ It also avoids overfitting any specific data generation protocol or imaging devi
 
 
 
-### Representitive Results
+
 
 
 
