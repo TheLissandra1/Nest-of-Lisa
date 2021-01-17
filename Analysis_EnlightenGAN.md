@@ -130,21 +130,6 @@ If you find this work useful for you, please cite
 
 * * * 
 # Q & A
->
-#### Data preprocessing:
-1. Collect synthetic image pairs from raw images, they transform images into YCbCr channel and calculate the histogram of Y channel.
-2. The image pairs contains low light and normal light images in the same angle, and all resolutions are the same, 600*400 pixels (width*height), depth is 24, .png format, created by Adobe Light-room.
-#### Intro to Decom-Net: 
-1. It takes 5 convolutional layers with a ReLU activation function between to ConV2d layers without ReLU. 
-2. In the results, low/normal-light images share the same reflectance. And the illumination map should be smooth but retain main structures, which is obtained by a structure-aware total variation loss.
-#### Intro to Enhance-Net:
-It adjusts the illumination map to maintain consistency at large regions while tailor local distributions by multi-scale concatenation.
-It consists of 3 down-sampling blocks and 3 up-sampling ones.
-1. Train both Net,
-2. Finetune the net end-to-end using SGD (Stochastic Gradient Descent) with back-propagation.
-3. Batch size = 16, patch_size = 96*96, learning rate = 0.001, 0.1 and 10
-
-
 ### Q1. Why the channel number of the input Conv layer in DecomNet is 4?
 * A: 3 RGB channels represent Reflectance and 1 illumination channel, this illumination channel is calculated from max values in RGB channel
 
