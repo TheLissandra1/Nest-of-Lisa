@@ -89,7 +89,7 @@ It also avoids overfitting any specific data generation protocol or imaging devi
 ### 4.3 Comparison with State-of-the-Arts
 #### 4.3.1 Visual Quality Comparison
 #### 4.3.2 Human Subjective Evaluation 
-* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Fig5.png" width="110%">
+* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Fig4.png" width="110%">
 #### 4.3.3 No-Referenced Image Quality Assessment
 ### 4.4 Adaptation on Real-World Images
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Fig6.png" width="110%">
