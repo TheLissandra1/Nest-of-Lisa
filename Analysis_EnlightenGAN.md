@@ -34,13 +34,55 @@ It also avoids overfitting any specific data generation protocol or imaging devi
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/34.png" width="50%">
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/56.png" width="50%">
 ### 3.2 Self Feature Preserving Loss
+ > * In unpaired setting, we propose to instead constrain the VGG feature distance between the input low-light and its enhanced normal-light output. 
+ > * Based on the author's empirical observation, the classification results by VGG models are not very sensitive when manipulating the input pixel intensity range.
+ > * We call it *self feature preserving loss* to stress its self-regularization utility to preserve the image content features to itself, before and after the enhancement. 
+* The self feature preserving loss *Lsfp* is defined as:
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/7Lsfp.png" width="50%">
+* where 
+    - IL denotes the input low-light image.
+    - G(IL) denotes the generator's enhanced output. 
+    - *Φi,j* denotes the feature map extracted from a VGG-16 model pre-trained on ImageNet.
+    - i represents its i-th maxpooling
+    - j represents its j-th convonlutional layer after i-th maxpooling layer.
+    - Wi,j and Hi,j are the dimensions of the extracted feature maps.
+    - By default we choose i=5, j=1.
+* For the local discriminator, the cropped local patches from input and output images are also regularized by a similarly defined self feature preserving loss, *Lsfp_local* .
+* We add an instance normalization layer after the VGG feature maps before feeding into *Lsfp* and *Lsfp_local* to stablize training.
+* The overall loss function for training EnlightenGAN is thus written as:
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/8Loss.png" width="50%">
 ### 3.3 U-Net Generator Guided with Self-Regularized Attention
+* U-Net has achieved huge success on semantic segmentation, image restoration and enhancement. By extracting multi-level features from different depth layers. U-Net preserves rich texture information and synthesizes high quality images using multi-scale context information. We adopt U-Net as our generator backbone.
+* Unet Architecture:
+* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Unet.png" width="70%">
+* Intuitively, in a low-light image of spatially varying light condition, we always want to enhance the dark regions more than bright regions, so that the output image has neither over- nor under-exposure.
+* We take the illumination channel *I* of the input RGB image, normalize to [0,1], and then use *1-I* (element-wise difference) as our self-regularized attention map.
+* We then resize the attention map to fit each feature map and multiply it with all intermediate feature maps as well as the output image.
+* We emphazie that our attention map is also a form of self-regularization, rather than learned with supervision. Despite its simplicity, the attention guidance shows to improve the visual quality consistency.
 
-
+* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/EnlightenGAN.png" width="110%">
+* Our attention-guided U-Net generator is implemented with 8 ConV blocks. Each block consists of two 3 x 3 ConV layers, followed by LeakyReLu and a batch normalization layer. At the upsampling stage, we replace the standard deconvolutional layer in U-Net with one bilinear upsampling layer + one ConV layer, to mitigate the checkerboard artifacts. The final architecture of EnlightenGAN is illustrated in the image above.
 ## Experiments
 ### 4.1 Dataset and Implementation Details
+* We assemble a mixture of 914 low-light images and 1016 normal light images from several dataset and also HDR sources without the need to keep any pair.
+#### Training Dataset Preview
+*
+| images | Low light image | Normal light image |
+| :----: | :----: | :----: |
+| detail | 600 * 400 pixel (width * height) .png format | 600 * 400 pixel (width * height), .png format |
+|image e.g.| <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/105_2.png"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/normal00101.png"> |
+
+#### Testing Dataset Preview
+* We choose standard ones used in previous works (NPE, LIME, MEF, DICM, VV, etc.).
+*
+| images | NPE | LIME | MEF | DICM | VV |
+| :----: | :----: | :----: | :----: | :----: | :----: |
+| detail | 600 * 400 pixel (width * height) .png format |
+|image e.g.| <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/birds.jpg"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/1.bmp"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/A.png"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/01.JPG"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/P1000205.jpg"> |
+* EnlightenGAN is first trained from the scratch for 100 epochs with the learning rate of 1e-4, followed by another 100 epochs with the learning rate linearly decayed to 0. We use the Adam optimizer and the batch size is set to be 32.
+* Thanks to the lightweight design of one-path GAN without using cycle-consistency, the training time is much shorter than cycle based methods. The whole training process takes 3 hours on 3 Nvidia 1080Ti GPUs.
+
+
 ### 4.2 Ablation Study
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Fig3.png" width="110%">
 ### 4.3 Comparison with State-of-the-Arts
@@ -117,14 +159,6 @@ If you find this work useful for you, please cite
   year={2019}
 }
 ```
-
-## Dataset Preview
-*
-
-| image | Low light image | Normal light image |
-| :----: | :----: | :----: |
-| detail | 600 * 400 pixel (width * height), created by Adobe Light-room, .png format | 600 * 400 pixel (width * height), created by Adobe Light-room, .png format |
-|image pair e.g.| <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/lowlightimg2.png"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_DeepDecomRetinex/2.png"> |
 
 
 
