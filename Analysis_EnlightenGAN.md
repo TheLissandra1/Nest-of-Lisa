@@ -32,8 +32,15 @@ It also avoids overfitting any specific data generation protocol or imaging devi
 
 ## Method
 ### 3.1 Global-Local Discriminators
+* To enhance local regions adaptively in addition to improving the light globally, we propose a novel global-local discriminator structure, both using PatchGAN for real/fake discrimination.
+* In addition to the image-level global discriminator, we add a local discriminator by taking randomly cropped local patches from both output and real normallight images, and learning to distinguish whether they are real (from real images) or fake (from enhanced outputs). Such a global-local structure ensures all local patches of an enhanced images look like realistic normal-light ones, which proves to be critical in avoiding local over- or underexposures as our experiments will reveal later.
+* Furthermore, for the global discriminator, we utilize the recently proposed relativistic discriminator structure which estimates the probability that real data is more realistic than fake data and also directs the generator to synthesize a fake image that is more realistic than real images.
+* The standard function of relativistic discriminator is:
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/12.png" width="50%">
+* where C denotes the network of discriminator, xr and xf are sampled from the real and fake distribution, σ represents the sigmoid function. We slight modify the relativistic discriminator to replace the sigmoid function with the leastsquare GAN (LSGAN) [36] loss. 
+* Finally, the loss functions for the global discriminator D and the generator G are:
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/34.png" width="50%">
+* For the local discriminator, we randomly crop 5 patches from the output and real images each time. Here we adopt the original LSGAN as the adversarial loss, as follows:
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/56.png" width="50%">
 ### 3.2 Self Feature Preserving Loss
  > * In unpaired setting, we propose to instead constrain the VGG feature distance between the input low-light and its enhanced normal-light output. 
