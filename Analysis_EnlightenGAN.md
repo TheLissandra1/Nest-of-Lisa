@@ -174,12 +174,8 @@ If you find this work useful for you, please cite
 
 * * * 
 # Q & A
-### Q1. Why the channel number of the input Conv layer in DecomNet is 4?
-* A: 3 RGB channels represent Reflectance and 1 illumination channel, this illumination channel is calculated from max values in RGB channel
-
-### Q2. Why using 64 channel in layers?
-* A:  64 is an empirical value. Trial-and-error process results in 64.
-
+### Q1. Why 
+* A: 
 
 
 
