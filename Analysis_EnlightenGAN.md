@@ -21,10 +21,12 @@ It also avoids overfitting any specific data generation protocol or imaging devi
 #### Paired Datasets
 * LOL Dataset
 #### Traditional Approaches
-* LIME: 
+* LIME: illumination of each pixel was first estimated by finding the maximum value in its RGB channels, then the illumination map was constructed by imposing a structure prior.
 #### Deep Learning Approaches
-* LL-Net:
-* HDR-Net:
+* LL-Net: a stacked auto-encoder to learn joint denoising and low-light enhancement on the patch level.
+* Retinex-Net: provided an end-to-end framework to combine the Retinex theory and deep networks.
+* HDR-Net: incorporated deep networks with the ideas of bilateral grid processing and local affine color transforms with pairwise supervision.
+* Learning to see in the dark: 
 #### Adversarial Learning 
 
 
