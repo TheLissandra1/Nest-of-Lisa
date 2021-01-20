@@ -94,16 +94,44 @@ It also avoids overfitting any specific data generation protocol or imaging devi
 
 
 ### 4.2 Ablation Study
+* To demonstrate the effectiveness of each component proposed in Sec. 3, we conduct several ablation experiments. Specifically, we design two experiments by removing the components of local discriminator and attention mechanism, respectively. 
+* As shown in Fig. 3, the first row shows the input images. The second row shows the image produced by EnlightenGAN with only global discriminator to distinguish between low-light and normal-light images. The third row is the result produced by EnlightenGAN which does not adopt self-regularized attention mechanism and
+uses U-Net as the generator instead. The last row is produced by our proposed version of EnlightenGAN. The enhanced results in the second row and the third row tend to contain local regions of severe color distortion or under-exposure, namely, the sky over the building in Fig.3(a), the roof region in Fig.3(b), the left blossom in Fig.3(c), the boundary of tree and bush in Fig.3(d), and the T-shirt in Fig.3(e). 
+* In contrast, the results of the full EnlightenGAN contain realistic color and thus more visually pleasing, which validates the effectiveness of the global-local discriminator design and self-regularized attention mechanism. More images are in the supplementary materials.
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Fig3.png" width="110%">
 ### 4.3 Comparison with State-of-the-Arts
+* In this section we compare the performance of EnlightenGAN with current state-of-the-art methods. We conduct a list of experiments including visual quality comparison, human subjective review and no-referenced image quality assessment (IQA), which are elaborated on next.
 #### 4.3.1 Visual Quality Comparison
-#### 4.3.2 Human Subjective Evaluation 
+* We first compare the visual quality of EnlightenGAN with several recent competing methods. The results are demonstrated in Fig. 4, where the first column shows the original low-light images, and the second to fifth columns are the images enhanced by: a vanilla CycleGAN [9] trained using our unpaired training set, RetinexNet [5], SRIE [20], LIME [21], and NPE [19]. The last column shows the results produced by EnlightenGAN.
+* We next zoom in on some details in the bounding boxes. LIME easily leads to over-exposure artifacts, which makes the results distorted and glaring with the some information missing. The results of SRIE and NPE are generally darker compared with others. CycleGAN and RetinexNet generate unsatisfactory visual results in terms of both brightness and naturalness. In contrast, EnlightenGAN successfully not only learns to enhance the dark area but also preserves the texture details and avoids over-exposure artifacts.
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Fig4.png" width="110%">
-#### 4.3.3 No-Referenced Image Quality Assessment
-### 4.4 Adaptation on Real-World Images
-* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Fig6.png" width="110%">
-### 4.5 Pre-Processing for Improving Classification
+* Figure 4: Comparison with other state-of-the-art methods. Zoom-in regions are used to illustrate the visual difference. 
+    - First example: EnlightenGAN successfully suppresses the noise in black sky and produces the best visible details of yellow wall.
+    - Second example: NPE and SRIE fail to enhance the background details. LIME introduces over-exposure on the woman’s face. However, EnlightenGAN not only restores the background details but also avoids over-exposure artifacts, distinctly outperforming other methods. 
+    - Third example: EnlightenGAN produces a visually pleasing result while avoiding overexposure artifacts in the car and cloud. Others either do not enhance dark details enough or generate over-exposure artifacts. Please zoom in to see the details.
+#### 4.3.2 Human Subjective Evaluation 
+* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/comparison.png" width="110%">
 
+#### 4.3.3 No-Referenced Image Quality Assessment
+* We adopt Natural Image Quality Evaluator (NIQE) [48], a well-known no-reference image quality assessment for evaluating real image restoration without ground-truth, to provide quantitative comparisons. The NIQE results on five publicly available image sets used by previous works (MEF, NPE, LIME, VV, and DICM) are reported in Table 1: a lower NIQE value indicates better visual quality. EnlightenGAN wins on three out of five sets, and is the best in terms of overall averaged NIQE. This further endorses the superiority of EnlightenGAN over current state-of-the-art methods in generating high-quality visual results.
+* <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/table1.png" width = "60%">
+* Figure 5: The result of five methods in the human subjective evaluation. In each histogram, x-axis denotes the ranking index (1 ∼ 5, 1 represents the highest), and y-axis denotes the number of images in each ranking index. EnlightenGAN produces the most top-ranking images and gains the best performance with the smallest average ranking value.
+### 4.4 Adaptation on Real-World Images
+* Domain adaptation is an indispensable factor for realworld generalizable image enhancement. The unpaired training strategy of EnlightenGAN allows us to directly
+learn to enhance real-world low-light images from various domains, where there is no paired normal-light training data or even no normal-light data from the same domainavailable. We conduct experiments using low-light images from a real-world driving dataset, Berkeley Deep Driving (BBD-100k) [1], to showcase this unique advantage of EnlightenGAN in practice.
+* We pick 950 night-time photos (selected by mean pixel intensity values smaller than 45) from the BBD-100k set as the low-light training images, plus 50 low-light images for hold-out testing. Those low-light images suffer from severe artifacts and high ISO noise. We then compare two EnlightenGAN versions trained on different normal-light image sets, including: 
+    - 1) the pre-trained EnlightenGAN model as described in Sec. 4.1, without any adaptation for BBD-100k; 
+    - 2) EnlightenGAN-N: a domain-adapted version of EnlightenGAN, which uses BBD-100k low-light images from the BBD-100k dataset for training, while the normal-light images are still the high-quality ones from our unpaired dataset in Sec. 4.1. We also include a traditional method, Adaptive histogram equalization (AHE), and a pretrained LIME model for comparison.
+* As shown in Fig. 6, the results from LIME suffer from severe noise amplification and over-exposure artifacts, while AHE does not enhance the brightness enough. The
+original EnlightenGAN also leads to noticeable artifacts on this unseen image domain. In comparison, EnlightenGANN produces the most visually pleasing results, striking an impressive balance between brightness and artifact/noise suppression. Thanks to the unpaired training, EnlightenGAN could be easily adapted into EnlightenGAN-N without requiring any supervised/paired data in the new domain, which greatly facilitates its real-world generalization.
+* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Fig6.png" width="110%">
+* Figure 6: Visual comparison of the results on the BBD-100k dataset [1]. EnlightenGAN-N is the domain-adapted version of EnlightenGAN, which generates the most visually pleasing results with noise suppressed. Please zoom in to see the details.
+
+### 4.5 Pre-Processing for Improving Classification
+* Image enhancement as pre-processing for improving subsequent high-level vision tasks has recently received increasing attention [28, 49, 50], with a number of benchmarking efforts [47, 51, 52]. We investigate the impact of light enhancement on the extremely dark (ExDark) dataset [53], which was specifically built for the task of low-light image recognition. The classification results after light enhancement could be treated as an indirect measure on semantic information preservation, as [28, 47] suggested.
+* The ExDark dataset consists of 7,363 low-light images, including 3000 images in training set, 1800 images in validation set and 2563 images in testing set, annotated into 12 object classes. We use its testing set only, applying our pretrained EnlightenGAN as a pre-processing step, followed by passing through another ImageNet-pretrained ResNet-50 classifier. Neither domain adaption nor joint training is per-formed. The high-level task performance serves as a fixed semantic-aware metric for enhancement results.
+* In the low-light testing set, using EnlightenGAN as pre-processing improves the classification accuracy from 22.02% (top-1) and 39.46% (top-5), to 23.94% (top-1) and
+40.92% (top-5) after enhancement. That supplies a side evidence that EnlightenGAN preserves semantic details, in addition to producing visually pleasing results. We also conduct experiment using LIME and AHE. LIME improves the accuracy to 23.32% (top-1) and 40.60% (top-5), while AHE obtains to 23.04% (top-1) and 40.37% (top-5).
 ## Conclusion
 * In this paper, we address the low-light enhancement problem with a novel and flexible unsupervised framework.
 * The proposed EnlightenGAN operates and generalizes well without any paired training data. The experimental results on various low light datasets show that our approach outperforms multiple state-of-the-art approaches under both subjective and objective metrics.
