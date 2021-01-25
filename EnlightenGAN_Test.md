@@ -2,13 +2,13 @@
 ### Training Possible Errors:
 #### 1. IndexError: invalid index of a 0-dim tensor. Use `tensor.item()` in Python or `tensor.item<T>()` in C++ to convert a 0-dim tensor to a number
 * Use .item() to fix it.
-##### 1st training: batch size = 4
+#### 1st training: batch size = 4
 * It begins in 17:36 and ends in 01:00, lasts 7.5 hours, 200 epochs, the learning rate decreases from 0.0001 at 101th epoch and falls to 0.000001 in the final 200th epoch. Did not use the visdom server.
 * Note: Only batch size <= 4 and with 3 GPU (0,1,2) is available. Batch size larger than 4 will cause Runtimeerror: CUDA out of memory.
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/training1.png" width="80%">
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/training3.png" width="80%">
 
-##### later training attempts:
+#### later training attempts:
 * Attempts to training only succeed once, the author uses ```python -m visdom.server``` to visualize in real time, but when trying to connect through remote server, it always report 2 kinds of errors:
 1. Connection error:
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/trainingConnectionError.png" width="70%">
@@ -18,7 +18,8 @@
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/trainingMemoryError.png" width="80%">
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/Pytorch.png" width="90%">
 * It seems that the Pytorch always occupys a large proportion of the memory, and I have tried many times in different GPU servers, including fortunato, usher, dupin and prospero. The out of memory error begins after loading unaligned dataset and at the beginning of initializing the network.
-#### Testing Dataset Preview
+
+### Testing Dataset Preview
 * We choose standard ones used in previous works (NPE, LIME, MEF, DICM, VV, etc.).
 * Noted: Fusion dataset image sizes are various, NPE dataset image formats and sizes are various.
 *
