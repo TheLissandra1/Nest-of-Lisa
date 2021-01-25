@@ -26,6 +26,36 @@
 | images | NPE | LIME | MEF | DICM | VV | LOL | Brightening | Fusion |
 | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: |
 | detail | 750 * 725 pixel.jpg format | 720 * 680 pixel.bmp format | 512 * 340 pixel.png format | 480 * 640 pixel.JPG format | 2304 * 1728 pixel.jpg |600 * 400 pixel .png format |384 * 384 pixel .png | 900 * 573 .png |
-|image e.g.| <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/birds.jpg"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/1.bmp"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/A.png"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/01.JPG"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/P1000205.jpg"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/2_real_A.png"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/r000da54ft_real_A.png"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/1_real_A.png"> |
+|image e.g.| <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/birds.jpg"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/1.bmp"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/A.png"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/01.JPG"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/P1000205.jpg"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/2_real_A.png"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/r000da54ft_real_A.png"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/r000da54ft_real_A.png"> |
 ### Testing Possible Errors:
 #### 1. If we use images from LIME dataset to test the pretrained model, the memory only allows to test 5 images in one time.
+### Limitations:
+* Unsatisfying enhanced and original image pairs:
+| images | Real(Origin)| Fake(Enhanced) |
+| :----: | :----: | :----: | 
+| e.g | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/C_real_A.png">|  <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/C_fake_B.png">| 
+
+| e.g | <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/IMGP6081_real_A.png">|  <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/IMGP6081_fake_B.png">| 
+
+| e.g | <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/cloudy (2)_jpg_real_A.png">|  <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/cloudy (2)_jpg_fake_B.png">| 
+
+| e.g | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/Imgp6077_real_A.png">|  <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/Imgp6077_fake_B.png">| 
+
+| e.g | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/A_real_A.png.png">|  <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/A_fake_B.png">| 
+
+| e.g | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/belg006_real_A.png">|  <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/belg006_fake_B.png">| 
+
+| e.g | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/cloudy (2)_bmp_real_A.png">|  <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/cloudy (2)_bmp_fake_B.png">| 
+
+| e.g | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/37_real_A.png">|  <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/37_fake_B.png">| 
+
+
+* Issues: 
+    - 1. When predicting datasets above respectively, LIME and VV always report CUDA error: out of memory, even it is just processing one image, while others have no predict processing problems.
+    - 2. Common problems: 
+    - a). If we consider RGB values, enhanced results of images contain high R/G/B values are not good. Many of them are over-saturated. Meanwhile, the whole image is enhanced to a highly saturated image. Hence, severe color distortions occur.
+    - b). If we consider the illumination, enhanced results of images which contain over 1/2 bright regions and small dark regions commonly share one problem: the very bright regions are over-exposured while those very dark regions are under-exposed. Hence, lots of details in bright and dark areas are lost. 
+    - c). If we consider the lightings in dark areas, we can easily find that in several enhanced images, evident light blue contours surround the lightings.
+    - d). If we consider the illumination, we can find that those images with large dark regions will generally result in evident noise particles in enhanced images.
+    
+
