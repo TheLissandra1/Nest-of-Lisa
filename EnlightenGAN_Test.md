@@ -35,19 +35,12 @@
 | images | Real(Origin)| Fake(Enhanced) |
 | :----: | :----: | :----: | 
 | e.g | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/C_real_A.png">|  <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/C_fake_B.png">| 
-
 | e.g | <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/IMGP6081_real_A.png">|  <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/IMGP6081_fake_B.png">| 
-
 | e.g | <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/cloudy (2)_jpg_real_A.png">|  <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/cloudy (2)_jpg_fake_B.png">| 
-
 | e.g | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/Imgp6077_real_A.png">|  <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/Imgp6077_fake_B.png">| 
-
 | e.g | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/A_real_A.png.png">|  <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/A_fake_B.png">| 
-
 | e.g | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/belg006_real_A.png">|  <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/belg006_fake_B.png">| 
-
 | e.g | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/cloudy (2)_bmp_real_A.png">|  <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/cloudy (2)_bmp_fake_B.png">| 
-
 | e.g | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/NPE/37_real_A.png">| <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/NPE/37_fake_B.png">| 
 
 
