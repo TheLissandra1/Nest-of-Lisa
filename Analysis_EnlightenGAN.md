@@ -671,7 +671,8 @@ class SingleModel(BaseModel):
 
 ```
 #### networks.py: generator (G) and discriminator (D)
-* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/EnlightenGAN_model_G_Unet_resize_conv.png" width="100%">
+* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/EnlightenGAN_model_G_Unet_resize_conv.png" width="80%">
+* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/EnlightenGAN_NoNormDisciriminator.png" width="80%">
 ```python
 
 def define_G(input_nc, output_nc, ngf, which_model_netG, norm='batch', use_dropout=False, gpu_ids=[], skip=False, opt=None):
