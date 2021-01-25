@@ -43,6 +43,7 @@ It also avoids overfitting any specific data generation protocol or imaging devi
 * For the local discriminator, we randomly crop 5 patches from the output and real images each time. Here we adopt the original LSGAN as the adversarial loss, as follows:
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/56.png" width="50%">
 ### 3.2 Self Feature Preserving Loss
+ > * Perceptual loss: https://arxiv.org/pdf/1603.08155.pdf
  > * In unpaired setting, we propose to instead constrain the VGG feature distance between the input low-light and its enhanced normal-light output. 
  > * Based on the author's empirical observation, the classification results by VGG models are not very sensitive when manipulating the input pixel intensity range.
  > * We call it *self feature preserving loss* to stress its self-regularization utility to preserve the image content features to itself, before and after the enhancement. 
@@ -102,7 +103,7 @@ uses U-Net as the generator instead. The last row is produced by our proposed ve
 ### 4.3 Comparison with State-of-the-Arts
 * In this section we compare the performance of EnlightenGAN with current state-of-the-art methods. We conduct a list of experiments including visual quality comparison, human subjective review and no-referenced image quality assessment (IQA), which are elaborated on next.
 #### 4.3.1 Visual Quality Comparison
-* We first compare the visual quality of EnlightenGAN with several recent competing methods. The results are demonstrated in Fig. 4, where the first column shows the original low-light images, and the second to fifth columns are the images enhanced by: a vanilla CycleGAN [9] trained using our unpaired training set, RetinexNet [5], SRIE [20], LIME [21], and NPE [19]. The last column shows the results produced by EnlightenGAN.
+* We first compare the visual quality of EnlightenGAN with several recent competing methods. The results are demonstrated in Fig. 4, where the first column shows the original low-light images, and the second to fifth columns are the images enhanced by: a vanilla CycleGAN trained using our unpaired training set, RetinexNet, SRIE, LIME, and NPE. The last column shows the results produced by EnlightenGAN.
 * We next zoom in on some details in the bounding boxes. LIME easily leads to over-exposure artifacts, which makes the results distorted and glaring with the some information missing. The results of SRIE and NPE are generally darker compared with others. CycleGAN and RetinexNet generate unsatisfactory visual results in terms of both brightness and naturalness. In contrast, EnlightenGAN successfully not only learns to enhance the dark area but also preserves the texture details and avoids over-exposure artifacts.
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Fig4.png" width="110%">
 * Figure 4: Comparison with other state-of-the-art methods. Zoom-in regions are used to illustrate the visual difference. 
@@ -113,7 +114,7 @@ uses U-Net as the generator instead. The last row is produced by our proposed ve
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/comparison.png" width="110%">
 
 #### 4.3.3 No-Referenced Image Quality Assessment
-* We adopt Natural Image Quality Evaluator (NIQE) [48], a well-known no-reference image quality assessment for evaluating real image restoration without ground-truth, to provide quantitative comparisons. The NIQE results on five publicly available image sets used by previous works (MEF, NPE, LIME, VV, and DICM) are reported in Table 1: a lower NIQE value indicates better visual quality. EnlightenGAN wins on three out of five sets, and is the best in terms of overall averaged NIQE. This further endorses the superiority of EnlightenGAN over current state-of-the-art methods in generating high-quality visual results.
+* We adopt Natural Image Quality Evaluator (NIQE) https://live.ece.utexas.edu/publications/2013/mittal2013.pdf, a well-known no-reference image quality assessment for evaluating real image restoration without ground-truth, to provide quantitative comparisons. The NIQE results on five publicly available image sets used by previous works (MEF, NPE, LIME, VV, and DICM) are reported in Table 1: a lower NIQE value indicates better visual quality. EnlightenGAN wins on three out of five sets, and is the best in terms of overall averaged NIQE. This further endorses the superiority of EnlightenGAN over current state-of-the-art methods in generating high-quality visual results.
 * <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/table1.png" width = "60%">
 * Figure 5: The result of five methods in the human subjective evaluation. In each histogram, x-axis denotes the ranking index (1 ∼ 5, 1 represents the highest), and y-axis denotes the number of images in each ranking index. EnlightenGAN produces the most top-ranking images and gains the best performance with the smallest average ranking value.
 ### 4.4 Adaptation on Real-World Images
@@ -125,10 +126,10 @@ learn to enhance real-world low-light images from various domains, where there i
 * As shown in Fig. 6, the results from LIME suffer from severe noise amplification and over-exposure artifacts, while AHE does not enhance the brightness enough. The
 original EnlightenGAN also leads to noticeable artifacts on this unseen image domain. In comparison, EnlightenGANN produces the most visually pleasing results, striking an impressive balance between brightness and artifact/noise suppression. Thanks to the unpaired training, EnlightenGAN could be easily adapted into EnlightenGAN-N without requiring any supervised/paired data in the new domain, which greatly facilitates its real-world generalization.
 * <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Fig6.png" width="110%">
-* Figure 6: Visual comparison of the results on the BBD-100k dataset [1]. EnlightenGAN-N is the domain-adapted version of EnlightenGAN, which generates the most visually pleasing results with noise suppressed. Please zoom in to see the details.
+* Figure 6: Visual comparison of the results on the BBD-100k dataset. EnlightenGAN-N is the domain-adapted version of EnlightenGAN, which generates the most visually pleasing results with noise suppressed. Please zoom in to see the details.
 
 ### 4.5 Pre-Processing for Improving Classification
-* Image enhancement as pre-processing for improving subsequent high-level vision tasks has recently received increasing attention [28, 49, 50], with a number of benchmarking efforts [47, 51, 52]. We investigate the impact of light enhancement on the extremely dark (ExDark) dataset [53], which was specifically built for the task of low-light image recognition. The classification results after light enhancement could be treated as an indirect measure on semantic information preservation, as [28, 47] suggested.
+* Image enhancement as pre-processing for improving subsequent high-level vision tasks has recently received increasing attention, with a number of benchmarking efforts. We investigate the impact of light enhancement on the extremely dark (ExDark) dataset, which was specifically built for the task of low-light image recognition. The classification results after light enhancement could be treated as an indirect measure on semantic information preservation, as suggested.
 * The ExDark dataset consists of 7,363 low-light images, including 3000 images in training set, 1800 images in validation set and 2563 images in testing set, annotated into 12 object classes. We use its testing set only, applying our pretrained EnlightenGAN as a pre-processing step, followed by passing through another ImageNet-pretrained ResNet-50 classifier. Neither domain adaption nor joint training is per-formed. The high-level task performance serves as a fixed semantic-aware metric for enhancement results.
 * In the low-light testing set, using EnlightenGAN as pre-processing improves the classification accuracy from 22.02% (top-1) and 39.46% (top-5), to 23.94% (top-1) and
 40.92% (top-5) after enhancement. That supplies a side evidence that EnlightenGAN preserves semantic details, in addition to producing visually pleasing results. We also conduct experiment using LIME and AHE. LIME improves the accuracy to 23.32% (top-1) and 40.60% (top-5), while AHE obtains to 23.04% (top-1) and 40.37% (top-5).
@@ -143,13 +144,22 @@ original EnlightenGAN also leads to noticeable artifacts on this unseen image do
 
 
 ## Code
+### Training process
+Before starting training process, you should launch the `visdom.server` for visualizing.
+
+```nohup python -m visdom.server -port=8097```
+
+then run the following command
+
+```python scripts/script.py --train```
+
 #### parameters setting: scripts/script.py
 ```python
 import os
 import argparse
 
 parser = argparse.ArgumentParser()
-# parser.add_argument("--port", type=str, default="8097")
+parser.add_argument("--port", type=str, default="8097")
 parser.add_argument("--train", action='store_true')
 parser.add_argument("--predict", action='store_true')
 opt = parser.parse_args()
@@ -168,10 +178,10 @@ if opt.train:
         --patchD_3 5 \
         --n_layers_D 5 \
         --n_layers_patchD 4 \
-		--fineSize 128 \
+		--fineSize 256 \
         --patchSize 32 \
 		--skip 1 \
-		--batchSize 1\
+		--batchSize 2\
         --self_attention \
 		--use_norm 1 \
 		--use_wgan 0 \
@@ -181,8 +191,8 @@ if opt.train:
 		--instance_norm 0 \
 		--vgg 1 \
         --vgg_choose relu5_1 \
-		--gpu_ids 0,1,2")
-	# --display_port=" + opt.port)
+		--gpu_ids 0,3" \
+	    "--display_port=" + opt.port)
 
 elif opt.predict:
 	for i in range(1):
@@ -201,6 +211,171 @@ elif opt.predict:
                 --times_residual \
 	        	--instance_norm 0 --resize_or_crop='no'\
 	        	--which_epoch " + str(200 - i*5))
+```
+
+#### train.py
+```python
+import time
+from options.train_options import TrainOptions
+from data.data_loader import CreateDataLoader
+from models.models import create_model
+from util.visualizer import Visualizer
+
+def get_config(config):
+    import yaml
+    with open(config, 'r') as stream:
+        return yaml.load(stream)
+
+opt = TrainOptions().parse()
+config = get_config(opt.config)
+data_loader = CreateDataLoader(opt)
+dataset = data_loader.load_data() # dataset [UnaligneDataset] was created
+dataset_size = len(data_loader) # 1016
+print('#training images = %d' % dataset_size) # #training images = 1016
+
+model = create_model(opt) # single
+visualizer = Visualizer(opt)
+
+total_steps = 0
+
+for epoch in range(1, opt.niter + opt.niter_decay + 1): # (1, 201=100+100+1), 200 iterations
+    epoch_start_time = time.time()
+    for i, data in enumerate(dataset):
+        iter_start_time = time.time()
+        total_steps += opt.batchSize # origin value = 32, defined in script.py
+        epoch_iter = total_steps - dataset_size * (epoch - 1)
+        model.set_input(data) # input
+        model.optimize_parameters(epoch)
+
+        if total_steps % opt.display_freq == 0:  # total_steps % 30 (frequency of showing training results on screen)
+            visualizer.display_current_results(model.get_current_visuals(), epoch)
+
+        if total_steps % opt.print_freq == 0:   # total_steps % 100 (frequency of showing training results on console)
+            errors = model.get_current_errors(epoch)
+            t = (time.time() - iter_start_time) / opt.batchSize
+            visualizer.print_current_errors(epoch, epoch_iter, errors, t)
+            if opt.display_id > 0: # 1, True
+                visualizer.plot_current_errors(epoch, float(epoch_iter)/dataset_size, opt, errors)
+
+        if total_steps % opt.save_latest_freq == 0: # total_steps % 5000
+            print('saving the latest model (epoch %d, total_steps %d)' %
+                  (epoch, total_steps))
+            model.save('latest')
+
+    if epoch % opt.save_epoch_freq == 0: # epoch % 5
+        print('saving the model at the end of epoch %d, iters %d' %
+              (epoch, total_steps))
+        model.save('latest')
+        model.save(epoch)
+
+    print('End of epoch %d / %d \t Time Taken: %d sec' %
+          (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))
+    # End of epoch %d / 200
+    # Time Taken: %d sec
+    if opt.new_lr: # True
+        if epoch == opt.niter: # epoch == 100
+            model.update_learning_rate()
+        elif epoch == (opt.niter + 20):  # epoch == 120
+            model.update_learning_rate()
+        elif epoch == (opt.niter + 70): # epoch == 170
+            model.update_learning_rate()
+        elif epoch == (opt.niter + 90): # epoch == 190
+            model.update_learning_rate()
+            model.update_learning_rate()
+            model.update_learning_rate()
+            model.update_learning_rate()
+    else:
+        if epoch > opt.niter:
+            model.update_learning_rate()
+
+```
+
+#### Dataloader
+```python
+class UnalignedDataset(BaseDataset):
+    def initialize(self, opt):
+        self.opt = opt
+        self.root = opt.dataroot
+        self.dir_A = os.path.join(opt.dataroot, opt.phase + 'A') # --dataroot ../final_dataset/trainA
+        # self.parser.add_argument('--phase', type=str, default='train', help='train, val, test, etc')
+        self.dir_B = os.path.join(opt.dataroot, opt.phase + 'B') # --dataroot ../final_dataset/trainB
+
+        # self.A_paths = make_dataset(self.dir_A)
+        # self.B_paths = make_dataset(self.dir_B)
+        self.A_imgs, self.A_paths = store_dataset(self.dir_A) # function defined in image_folder.py
+        # dir_A = "../final_dataset/trainA"
+        # A_imgs: all images stored in trainA folder, A_paths: all images paths stored in trainA folder
+        self.B_imgs, self.B_paths = store_dataset(self.dir_B)
+
+        # self.A_paths = sorted(self.A_paths)
+        # self.B_paths = sorted(self.B_paths)
+        self.A_size = len(self.A_paths) # A_size = 914
+        self.B_size = len(self.B_paths) # B_size = 1016
+        
+        self.transform = get_transform(opt) # function defined in base_dataset.py
+                                            # randomly crops images into opt.fineSize
+                                            # then get normalized to [-1,1]
+
+    def __getitem__(self, index):
+        # A_path = self.A_paths[index % self.A_size]
+        # B_path = self.B_paths[index % self.B_size]
+
+        # A_img = Image.open(A_path).convert('RGB')
+        # B_img = Image.open(B_path).convert('RGB')
+        A_img = self.A_imgs[index % self.A_size]
+        B_img = self.B_imgs[index % self.B_size]
+        A_path = self.A_paths[index % self.A_size]
+        B_path = self.B_paths[index % self.B_size]
+        # A_size = A_img.size
+        # B_size = B_img.size
+        # A_size = A_size = (A_size[0]//16*16, A_size[1]//16*16)
+        # B_size = B_size = (B_size[0]//16*16, B_size[1]//16*16)
+        # A_img = A_img.resize(A_size, Image.BICUBIC)
+        # B_img = B_img.resize(B_size, Image.BICUBIC)
+        # A_gray = A_img.convert('LA')
+        # A_gray = 255.0-A_gray
+
+        A_img = self.transform(A_img) # get_transform, randomly crop and normalization
+        B_img = self.transform(B_img)
+
+        
+        if self.opt.resize_or_crop == 'no': # False, resize_or_crop = 'crop'
+            r,g,b = A_img[0]+1, A_img[1]+1, A_img[2]+1
+            A_gray = 1. - (0.299*r+0.587*g+0.114*b)/2.
+            A_gray = torch.unsqueeze(A_gray, 0)
+            input_img = A_img
+            # A_gray = (1./A_gray)/255.
+        else: # True
+            w = A_img.size(2) # width
+            h = A_img.size(1) # height
+            
+            # A_gray = (1./A_gray)/255.
+            if (not self.opt.no_flip) and random.random() < 0.5:
+                idx = [i for i in range(A_img.size(2) - 1, -1, -1)]
+                idx = torch.LongTensor(idx)
+                A_img = A_img.index_select(2, idx)
+                B_img = B_img.index_select(2, idx)
+            if (not self.opt.no_flip) and random.random() < 0.5:
+                idx = [i for i in range(A_img.size(1) - 1, -1, -1)]
+                idx = torch.LongTensor(idx)
+                A_img = A_img.index_select(1, idx)
+                B_img = B_img.index_select(1, idx)
+            if self.opt.vary == 1 and (not self.opt.no_flip) and random.random() < 0.5:
+                times = random.randint(self.opt.low_times,self.opt.high_times)/100.
+                input_img = (A_img+1)/2./times
+                input_img = input_img*2-1
+            else: # True
+                input_img = A_img
+            if self.opt.lighten:# True, normalize attention map. ????
+                B_img = (B_img + 1)/2.
+                B_img = (B_img - torch.min(B_img))/(torch.max(B_img) - torch.min(B_img)) # min-max normalization
+                B_img = B_img*2. -1
+            r,g,b = input_img[0]+1, input_img[1]+1, input_img[2]+1
+            A_gray = 1. - (0.299*r+0.587*g+0.114*b)/2. # Gray = R*0.299 + G*0.587 + B*0.114?????
+            A_gray = torch.unsqueeze(A_gray, 0) # dimension = 0
+        return {'A': A_img, 'B': B_img, 'A_gray': A_gray, 'input_img': input_img,
+                'A_paths': A_path, 'B_paths': B_path}
+
 ```
 #### model.py
 * 
@@ -244,8 +419,259 @@ def create_model(opt):
     return model
 
 ```
+#### single_model.py: EnlightenGAN model initialize
+```python
+class SingleModel(BaseModel):
+    def name(self):
+        return 'SingleGANModel'
 
+    def initialize(self, opt):
+        BaseModel.initialize(self, opt)
+
+        nb = opt.batchSize
+        size = opt.fineSize
+        self.opt = opt
+        self.input_A = self.Tensor(nb, opt.input_nc, size, size) # CUDA: out of memory
+        # nb: batchSize, opt.input_nc: 3, input image channels, size: fineSize (randomly cropped image size)
+        self.input_B = self.Tensor(nb, opt.output_nc, size, size)
+        # opt.output_nc: 3, output image channels
+        self.input_img = self.Tensor(nb, opt.input_nc, size, size)
+        self.input_A_gray = self.Tensor(nb, 1, size, size)
+
+        if opt.vgg > 0: # vgg = 1 in scripts.py, use vgg by default
+            self.vgg_loss = networks.PerceptualLoss(opt) # Self feature preserving loss
+            if self.opt.IN_vgg: # True, patch vgg individual
+                self.vgg_patch_loss = networks.PerceptualLoss(opt)
+                self.vgg_patch_loss.cuda()
+            self.vgg_loss.cuda()
+            self.vgg = networks.load_vgg16("./model", self.gpu_ids) # load pretrained vgg16 model
+            self.vgg.eval() # switch to evaluation mode
+            for param in self.vgg.parameters():
+                param.requires_grad = False
+        elif opt.fcn > 0: # use semantic loss
+            self.fcn_loss = networks.SemanticLoss(opt)
+            self.fcn_loss.cuda()
+            self.fcn = networks.load_fcn("./model")
+            self.fcn.eval()
+            for param in self.fcn.parameters():
+                param.requires_grad = False
+        # load/define networks
+        # The naming conversion is different from those used in the paper
+        # Code (paper): G_A (G), G_B (F), D_A (D_Y), D_B (D_X)
+
+        skip = True if opt.skip > 0 else False # skip = 1
+        self.netG_A = networks.define_G(opt.input_nc, opt.output_nc, # netG_A is G: Unet_resize_conv
+                                        opt.ngf, opt.which_model_netG, opt.norm, not opt.no_dropout, self.gpu_ids, skip=skip, opt=opt)
+        # self.netG_A = networks.define_G(3,3,64,sid_unet_resize,instance, not 'no dropout for the generator',gpu_ids, skip=1,opt)
+        # ngf: num of gen filters in first conv layer, 64 by default
+        # skip: = 1 in scripts.py. B = net.forward(A) + skip*A
+        # self.netG_B = networks.define_G(opt.output_nc, opt.input_nc,
+        #                                 opt.ngf, opt.which_model_netG, opt.norm, not opt.no_dropout, self.gpu_ids, skip=False, opt=opt)
+
+        if self.isTrain: # True when training
+            use_sigmoid = opt.no_lsgan # do *not* use least square GAN
+            self.netD_A = networks.define_D(opt.output_nc, opt.ndf, # discriminator (global)
+                                            opt.which_model_netD,
+                                            opt.n_layers_D, opt.norm, use_sigmoid, self.gpu_ids, False)
+            # self.netD_A = networks.define_D(3,64,NoNormDiscriminator,5,instance,no sigmoid,gpu_ids,patch=False)
+            if self.opt.patchD: # True, use patch discriminator (local)
+                self.netD_P = networks.define_D(opt.input_nc, opt.ndf,
+                                            opt.which_model_netD,
+                                            opt.n_layers_patchD, opt.norm, use_sigmoid, self.gpu_ids, True)
+                # self.netD_P = networks.define_D(3,64,NoNormDiscriminator,4,instance,no sigmoid,gpu_ids,patch=True)
+        if not self.isTrain or opt.continue_train:
+            which_epoch = opt.which_epoch
+            self.load_network(self.netG_A, 'G_A', which_epoch)
+            # self.load_network(self.netG_B, 'G_B', which_epoch)
+            if self.isTrain:
+                self.load_network(self.netD_A, 'D_A', which_epoch)
+                if self.opt.patchD:
+                    self.load_network(self.netD_P, 'D_P', which_epoch)
+
+        if self.isTrain: # True when training
+            self.old_lr = opt.lr # lr = 0.0001, defined in train_options.py
+            # self.fake_A_pool = ImagePool(opt.pool_size)
+            self.fake_B_pool = ImagePool(opt.pool_size)# 50, the size of image buffer that stores previously generated images
+            # define loss functions
+            if opt.use_wgan: # False
+                self.criterionGAN = networks.DiscLossWGANGP()
+            else: # True
+                self.criterionGAN = networks.GANLoss(use_lsgan=not opt.no_lsgan, tensor=self.Tensor)
+            if opt.use_mse: # True
+                self.criterionCycle = torch.nn.MSELoss()
+            else:
+                self.criterionCycle = torch.nn.L1Loss()
+            self.criterionL1 = torch.nn.L1Loss()
+            self.criterionIdt = torch.nn.L1Loss()
+            # initialize optimizers
+            self.optimizer_G = torch.optim.Adam(self.netG_A.parameters(),
+                                                lr=opt.lr, betas=(opt.beta1, 0.999))# beta1=0.5, momentum of adam
+            self.optimizer_D_A = torch.optim.Adam(self.netD_A.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
+            if self.opt.patchD: # True
+                self.optimizer_D_P = torch.optim.Adam(self.netD_P.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
+
+        print('---------- Networks initialized -------------')
+        networks.print_network(self.netG_A) # sid_unet_resize aka Unet_resize_conv
+        # networks.print_network(self.netG_B)
+        if self.isTrain: # True
+            networks.print_network(self.netD_A)  # no_norm_4
+            if self.opt.patchD: # True
+                networks.print_network(self.netD_P) # use patch discriminator
+            # networks.print_network(self.netD_B)
+        if opt.isTrain:# True
+            self.netG_A.train()
+            # self.netG_B.train()
+        else: # predict mode
+            self.netG_A.eval()
+            # self.netG_B.eval()
+        print('-----------------------------------------------')
+
+```
+
+##### single_model.py: backward() of D_A (global), D_P (local) and G (generator)
+```python
+############################################backward_D_basic()#########################################	
+    def backward_D_basic(self, netD, real, fake, use_ragan):
+        # Real
+        pred_real = netD.forward(real) # D(real)
+        pred_fake = netD.forward(fake.detach()) # D(fake)
+        if self.opt.use_wgan: # False
+            loss_D_real = pred_real.mean()
+            loss_D_fake = pred_fake.mean()
+            loss_D = loss_D_fake - loss_D_real + self.criterionGAN.calc_gradient_penalty(netD, 
+                                                real.data, fake.data)
+        elif self.opt.use_ragan and use_ragan: # True,
+            loss_D = (self.criterionGAN(pred_real - torch.mean(pred_fake), True) +
+                                      self.criterionGAN(pred_fake - torch.mean(pred_real), False)) / 2
+        else:
+            loss_D_real = self.criterionGAN(pred_real, True)
+            loss_D_fake = self.criterionGAN(pred_fake, False)
+            loss_D = (loss_D_real + loss_D_fake) * 0.5
+        # loss_D.backward()
+        return loss_D
+############################################backward_D_A()#########################################	
+    def backward_D_A(self): # Global
+        fake_B = self.fake_B_pool.query(self.fake_B)
+        fake_B = self.fake_B
+        self.loss_D_A = self.backward_D_basic(self.netD_A, self.real_B, fake_B, True)
+        self.loss_D_A.backward()
+############################################backward_D_P()#########################################	    
+    def backward_D_P(self): # Local
+        if self.opt.hybrid_loss: # True
+            loss_D_P = self.backward_D_basic(self.netD_P, self.real_patch, self.fake_patch, False)
+            if self.opt.patchD_3 > 0: # True
+                for i in range(self.opt.patchD_3):
+                    loss_D_P += self.backward_D_basic(self.netD_P, self.real_patch_1[i], self.fake_patch_1[i], False)
+                self.loss_D_P = loss_D_P/float(self.opt.patchD_3 + 1)
+            else:
+                self.loss_D_P = loss_D_P
+        else:
+            loss_D_P = self.backward_D_basic(self.netD_P, self.real_patch, self.fake_patch, True)
+            if self.opt.patchD_3 > 0:
+                for i in range(self.opt.patchD_3):
+                    loss_D_P += self.backward_D_basic(self.netD_P, self.real_patch_1[i], self.fake_patch_1[i], True)
+                self.loss_D_P = loss_D_P/float(self.opt.patchD_3 + 1)
+            else:
+                self.loss_D_P = loss_D_P
+        if self.opt.D_P_times2: # True
+            self.loss_D_P = self.loss_D_P*2
+        self.loss_D_P.backward()
+############################################backward_G()#########################################	
+    def backward_G(self, epoch):
+        pred_fake = self.netD_A.forward(self.fake_B)
+        if self.opt.use_wgan:
+            self.loss_G_A = -pred_fake.mean()
+        elif self.opt.use_ragan: # True
+            pred_real = self.netD_A.forward(self.real_B)
+
+            self.loss_G_A = (self.criterionGAN(pred_real - torch.mean(pred_fake), False) +
+                                      self.criterionGAN(pred_fake - torch.mean(pred_real), True)) / 2
+            
+        else:
+            self.loss_G_A = self.criterionGAN(pred_fake, True)
+        
+        loss_G_A = 0
+        if self.opt.patchD: # True
+            pred_fake_patch = self.netD_P.forward(self.fake_patch)
+            if self.opt.hybrid_loss: # True
+                loss_G_A += self.criterionGAN(pred_fake_patch, True)
+            else:
+                pred_real_patch = self.netD_P.forward(self.real_patch)
+                
+                loss_G_A += (self.criterionGAN(pred_real_patch - torch.mean(pred_fake_patch), False) +
+                                      self.criterionGAN(pred_fake_patch - torch.mean(pred_real_patch), True)) / 2
+        if self.opt.patchD_3 > 0: # 5 True
+            for i in range(self.opt.patchD_3):
+                pred_fake_patch_1 = self.netD_P.forward(self.fake_patch_1[i])
+                if self.opt.hybrid_loss:
+                    loss_G_A += self.criterionGAN(pred_fake_patch_1, True)
+                else:
+                    pred_real_patch_1 = self.netD_P.forward(self.real_patch_1[i])
+                    
+                    loss_G_A += (self.criterionGAN(pred_real_patch_1 - torch.mean(pred_fake_patch_1), False) +
+                                        self.criterionGAN(pred_fake_patch_1 - torch.mean(pred_real_patch_1), True)) / 2
+                    
+            if not self.opt.D_P_times2: # False
+                self.loss_G_A += loss_G_A/float(self.opt.patchD_3 + 1)
+            else: # True
+                self.loss_G_A += loss_G_A/float(self.opt.patchD_3 + 1)*2
+        else:
+            if not self.opt.D_P_times2:
+                self.loss_G_A += loss_G_A
+            else:
+                self.loss_G_A += loss_G_A*2
+                
+        if epoch < 0:
+            vgg_w = 0
+        else:
+            vgg_w = 1
+        if self.opt.vgg > 0: # True vgg = 1
+            self.loss_vgg_b = self.vgg_loss.compute_vgg_loss(self.vgg, 
+                    self.fake_B, self.real_A) * self.opt.vgg if self.opt.vgg > 0 else 0
+            if self.opt.patch_vgg:
+                if not self.opt.IN_vgg:
+                    loss_vgg_patch = self.vgg_loss.compute_vgg_loss(self.vgg, 
+                    self.fake_patch, self.input_patch) * self.opt.vgg
+                else: # True
+                    loss_vgg_patch = self.vgg_patch_loss.compute_vgg_loss(self.vgg, 
+                    self.fake_patch, self.input_patch) * self.opt.vgg
+                if self.opt.patchD_3 > 0: # 5, True
+                    for i in range(self.opt.patchD_3):
+                        if not self.opt.IN_vgg:
+                            loss_vgg_patch += self.vgg_loss.compute_vgg_loss(self.vgg, 
+                                self.fake_patch_1[i], self.input_patch_1[i]) * self.opt.vgg
+                        else: # True
+                            loss_vgg_patch += self.vgg_patch_loss.compute_vgg_loss(self.vgg, 
+                                self.fake_patch_1[i], self.input_patch_1[i]) * self.opt.vgg
+                    self.loss_vgg_b += loss_vgg_patch/float(self.opt.patchD_3 + 1)
+                else:
+                    self.loss_vgg_b += loss_vgg_patch
+            self.loss_G = self.loss_G_A + self.loss_vgg_b*vgg_w
+       
+        self.loss_G.backward()
+############################################optimize_parameters#########################################
+    def optimize_parameters(self, epoch):
+        # forward
+        self.forward()
+        # G_A and G_B
+        self.optimizer_G.zero_grad()
+        self.backward_G(epoch)
+        self.optimizer_G.step()
+        # D_A
+        self.optimizer_D_A.zero_grad()
+        self.backward_D_A()
+        if not self.opt.patchD:
+            self.optimizer_D_A.step()
+        else: # True
+            # self.forward()
+            self.optimizer_D_P.zero_grad()
+            self.backward_D_P()
+            self.optimizer_D_A.step()
+            self.optimizer_D_P.step()
+
+```
 #### networks.py: generator (G) and discriminator (D)
+* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/EnlightenGAN_model_G_Unet_resize_conv.png" width="100%">
 ```python
 
 def define_G(input_nc, output_nc, ngf, which_model_netG, norm='batch', use_dropout=False, gpu_ids=[], skip=False, opt=None):
@@ -594,10 +1020,140 @@ def define_D(input_nc, ndf, which_model_netD,
 
 
 ```
+#### networks.py: Vgg16
+* <img src="https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/VGG16_D.jpg"> width = "70%">
+```python
+class Vgg16(nn.Module):
+    def __init__(self):
+        super(Vgg16, self).__init__()
+        self.conv1_1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1)
+        self.conv1_2 = nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1)
 
+        self.conv2_1 = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1)
+        self.conv2_2 = nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1)
 
+        self.conv3_1 = nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1)
+        self.conv3_2 = nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1)
+        self.conv3_3 = nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1)
 
+        self.conv4_1 = nn.Conv2d(256, 512, kernel_size=3, stride=1, padding=1)
+        self.conv4_2 = nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1)
+        self.conv4_3 = nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1)
 
+        self.conv5_1 = nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1)
+        self.conv5_2 = nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1)
+        self.conv5_3 = nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1)
+
+    def forward(self, X, opt):
+        h = F.relu(self.conv1_1(X), inplace=True)
+        h = F.relu(self.conv1_2(h), inplace=True)
+        # relu1_2 = h
+        h = F.max_pool2d(h, kernel_size=2, stride=2)
+
+        h = F.relu(self.conv2_1(h), inplace=True)
+        h = F.relu(self.conv2_2(h), inplace=True)
+        # relu2_2 = h
+        h = F.max_pool2d(h, kernel_size=2, stride=2)
+
+        h = F.relu(self.conv3_1(h), inplace=True)
+        h = F.relu(self.conv3_2(h), inplace=True)
+        h = F.relu(self.conv3_3(h), inplace=True)
+        # relu3_3 = h
+        if opt.vgg_choose != "no_maxpool":
+            h = F.max_pool2d(h, kernel_size=2, stride=2)
+
+        h = F.relu(self.conv4_1(h), inplace=True)
+        relu4_1 = h
+        h = F.relu(self.conv4_2(h), inplace=True)
+        relu4_2 = h
+        conv4_3 = self.conv4_3(h)
+        h = F.relu(conv4_3, inplace=True)
+        relu4_3 = h
+
+        if opt.vgg_choose != "no_maxpool":
+            if opt.vgg_maxpooling:
+                h = F.max_pool2d(h, kernel_size=2, stride=2)
+        
+        relu5_1 = F.relu(self.conv5_1(h), inplace=True)
+        relu5_2 = F.relu(self.conv5_2(relu5_1), inplace=True)
+        conv5_3 = self.conv5_3(relu5_2) 
+        h = F.relu(conv5_3, inplace=True)
+        relu5_3 = h
+        if opt.vgg_choose == "conv4_3":
+            return conv4_3
+        elif opt.vgg_choose == "relu4_2":
+            return relu4_2
+        elif opt.vgg_choose == "relu4_1":
+            return relu4_1
+        elif opt.vgg_choose == "relu4_3":
+            return relu4_3
+        elif opt.vgg_choose == "conv5_3":
+            return conv5_3
+        elif opt.vgg_choose == "relu5_1":
+            return relu5_1
+        elif opt.vgg_choose == "relu5_2":
+            return relu5_2
+        elif opt.vgg_choose == "relu5_3" or "maxpool":
+            return relu5_3
+
+```
+#### Perceptual Loss, GAN loss (LSGAN loss, MSE loss)
+```python
+class PerceptualLoss(nn.Module):
+    def __init__(self, opt):
+        super(PerceptualLoss, self).__init__()
+        self.opt = opt
+        self.instancenorm = nn.InstanceNorm2d(512, affine=False)
+
+    def compute_vgg_loss(self, vgg, img, target):
+        img_vgg = vgg_preprocess(img, self.opt)
+        target_vgg = vgg_preprocess(target, self.opt)
+        img_fea = vgg(img_vgg, self.opt)
+        target_fea = vgg(target_vgg, self.opt)
+        if self.opt.no_vgg_instance: # action='store_true' in base_options.py, help='vgg instance normalization'
+            return torch.mean((img_fea - target_fea) ** 2) # perceptual loss
+        else:
+            return torch.mean((self.instancenorm(img_fea) - self.instancenorm(target_fea)) ** 2)
+```
+* * * 
+```python
+class GANLoss(nn.Module):
+    def __init__(self, use_lsgan=True, target_real_label=1.0, target_fake_label=0.0,
+                 tensor=torch.FloatTensor):
+        super(GANLoss, self).__init__()
+        self.real_label = target_real_label # 1
+        self.fake_label = target_fake_label # 0
+        self.real_label_var = None
+        self.fake_label_var = None
+        self.Tensor = tensor
+        if use_lsgan:
+            self.loss = nn.MSELoss() # MSELoss=(Xi-Yi)^2, return loss.mean(), a scalar
+        else:
+            self.loss = nn.BCELoss()
+
+    def get_target_tensor(self, input, target_is_real):
+        target_tensor = None
+        if target_is_real: # True
+            create_label = ((self.real_label_var is None) or
+                            (self.real_label_var.numel() != input.numel()))# numel() returns elements number
+            if create_label:
+                real_tensor = self.Tensor(input.size()).fill_(self.real_label)
+                self.real_label_var = Variable(real_tensor, requires_grad=False)
+            target_tensor = self.real_label_var
+        else: # False
+            create_label = ((self.fake_label_var is None) or
+                            (self.fake_label_var.numel() != input.numel()))
+            if create_label:
+                fake_tensor = self.Tensor(input.size()).fill_(self.fake_label)
+                self.fake_label_var = Variable(fake_tensor, requires_grad=False)
+            target_tensor = self.fake_label_var
+        return target_tensor
+
+    def __call__(self, input, target_is_real):
+        target_tensor = self.get_target_tensor(input, target_is_real)
+        return self.loss(input, target_tensor)
+
+```
 ## Environment Preparing
 ```
 python3.5
@@ -609,14 +1165,6 @@ You should prepare at least 3 1080ti gpus or change the batch size.
 ```mkdir model``` </br>
 Download VGG pretrained model from [[Google Drive 1]](https://drive.google.com/file/d/1IfCeihmPqGWJ0KHmH-mTMi_pn3z3Zo-P/view?usp=sharing), and then put it into the directory `model`.
 
-### Training process
-Before starting training process, you should launch the `visdom.server` for visualizing.
-
-```nohup python -m visdom.server -port=8097```
-
-then run the following command
-
-```python scripts/script.py --train```
 
 ### Testing process
 
@@ -627,7 +1175,42 @@ Create directories `../test_dataset/testA` and `../test_dataset/testB`. Put your
 Run
 
 ```python scripts/script.py --predict```
+#### predict.py
+```python
+import time
+import os
+import torch
+from options.test_options import TestOptions
+from data.data_loader import CreateDataLoader
+from models.models import create_model
+from util.visualizer import Visualizer
+from pdb import set_trace as st
+from util import html
 
+opt = TestOptions().parse()
+opt.nThreads = 1   # test code only supports nThreads = 1
+opt.batchSize = 1  # test code only supports batchSize = 1
+opt.serial_batches = True  # no shuffle
+opt.no_flip = True  # no flip
+
+data_loader = CreateDataLoader(opt)
+dataset = data_loader.load_data()
+model = create_model(opt)
+visualizer = Visualizer(opt)
+# create website
+web_dir = os.path.join("./ablation/", opt.name, '%s_%s' % (opt.phase, opt.which_epoch))
+webpage = html.HTML(web_dir, 'Experiment = %s, Phase = %s, Epoch = %s' % (opt.name, opt.phase, opt.which_epoch))
+# test
+print(len(dataset))
+for i, data in enumerate(dataset):
+    model.set_input(data)
+    visuals = model.predict()
+    img_path = model.get_image_paths()
+    print('process image... %s' % img_path)
+    visualizer.save_images(webpage, visuals, img_path)
+webpage.save()
+
+```
 ### Dataset preparing
 
 Training data [[Google Drive]](https://drive.google.com/drive/folders/1fwqz8-RnTfxgIIkebFG2Ej3jQFsYECh0?usp=sharing) (unpaired images collected from multiple datasets)
@@ -647,12 +1230,6 @@ If you find this work useful for you, please cite
 }
 ```
 
-
-
-* * * 
-# Q & A
-### Q1. 
-* A: 
 
 
 
