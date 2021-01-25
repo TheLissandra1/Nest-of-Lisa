@@ -84,12 +84,13 @@ It also avoids overfitting any specific data generation protocol or imaging devi
 
 #### Testing Dataset Preview
 * We choose standard ones used in previous works (NPE, LIME, MEF, DICM, VV, etc.).
-* Noted: NPE dataset image formats and size are various.
+* Noted: Fusion dataset image sizes are various, NPE dataset image formats and sizes are various.
 *
-| images | NPE | LIME | MEF | DICM | VV |
-| :----: | :----: | :----: | :----: | :----: | :----: |
-| detail | 750 * 725 pixel (width * height) .jpg format | 720 * 680 pixel (width * height) .bmp format | 512 * 340 pixel (width * height) .png format | 480 * 640 pixel (width * height) .JPG format | 2304* 1728 pixel (width * height) .jpg |
-|image e.g.| <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/birds.jpg"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/1.bmp"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/A.png"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/01.JPG"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/P1000205.jpg"> |
+| images | NPE | LIME | MEF | DICM | VV | LOL | Brightening | Fusion |
+| :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: |
+| detail | 750 * 725 pixel.jpg format | 720 * 680 pixel.bmp format | 512 * 340 pixel.png format | 480 * 640 pixel.JPG format | 2304 * 1728 pixel.jpg |600 * 400 pixel .png format |384 * 384 pixel .png | 900 * 573 .png |
+|image e.g.| <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/birds.jpg"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/1.bmp"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/A.png"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/01.JPG"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/P1000205.jpg"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/2_real_A.png"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/r000da54ft_real_A.png"> | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/r000da54ft_real_A.png"> |
+
 * EnlightenGAN is first trained from the scratch for 100 epochs with the learning rate of 1e-4, followed by another 100 epochs with the learning rate linearly decayed to 0. We use the Adam optimizer and the batch size is set to be 32.
 * Thanks to the lightweight design of one-path GAN without using cycle-consistency, the training time is much shorter than cycle based methods. The whole training process takes 3 hours on 3 Nvidia 1080Ti GPUs.
 
