@@ -31,6 +31,7 @@
 #### 1. If we use images from LIME dataset to test the pretrained model, the memory only allows to test 5 images in one time.
 ### Limitations:
 * Unsatisfying enhanced and original image pairs:
+
 | images | Real(Origin)| Fake(Enhanced) |
 | :----: | :----: | :----: | 
 | e.g | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/C_real_A.png">|  <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/C_fake_B.png">| 
@@ -47,7 +48,7 @@
 
 | e.g | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/cloudy (2)_bmp_real_A.png">|  <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/cloudy (2)_bmp_fake_B.png">| 
 
-| e.g | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/37_real_A.png">|  <img src = "https://github.com/TheLissandra1/Nest-of-Lisa/blob/master/ImageLinks_EnlightenGAN/Tests/37_fake_B.png">| 
+| e.g | <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/NPE/37_real_A.png">| <img src = "https://raw.githubusercontent.com/TheLissandra1/Nest-of-Lisa/master/ImageLinks_EnlightenGAN/Tests/NPE/37_fake_B.png">| 
 
 
 * Issues: 
